@@ -116,7 +116,7 @@ export default function Ting() {
             <View style={{flex: 1.5}}>
               <Image
                 source={{
-                  uri: 'https://picsum.photos/201',
+                  uri: 'https://picsum.photos/206',
                 }}
                 style={styles.logoim}
               />
