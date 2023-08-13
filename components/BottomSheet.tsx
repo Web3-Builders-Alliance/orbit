@@ -34,6 +34,6 @@ const styles = StyleSheet.create({
       borderTopLeftRadius: 15,
       borderTopRightRadius: 15,
       padding: 16,
-      maxHeight: 300, // Adjust this value as needed
+      maxHeight: 500, // Adjust this value as needed
     },
   });

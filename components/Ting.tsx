@@ -7,10 +7,12 @@ import {
   View,
   SafeAreaView,
   Button,
+  ScrollView
 } from 'react-native';
 import {Dimensions} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import BottomSheet from './BottomSheet';
+import { TouchableOpacity } from 'react-native';
 
 
 export default function Ting() {
@@ -27,13 +29,34 @@ export default function Ting() {
   return (
     <>
       <SafeAreaView>
+       
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       {/* <Button title="Open Bottom Sheet" onPress={openBottomSheet} /> */}
       <BottomSheet visible={bottomSheetVisible} onClose={closeBottomSheet}>
-        <Text>This is the content of the bottom sheet.</Text>
+      <ScrollView>
+      <View style={newStyle.mainapp}>
+        <Image
+          source={{
+            uri: "https://picsum.photos/200"
+          }}
+          style={newStyle.logo}
+        />
+      </View>
+
+      <View >
+        <Text style={newStyle.text}>User</Text>
+        <Text style={newStyle.subtext}>Wallet Address : </Text>
+        <Text style={newStyle.subtext}>
+          BZBT4C6UsEeow9ebLRymhtTtZj9sYDw3WkwZHHbFg2YY
+        </Text>
+        <Text style={newStyle.subtext}>Friends : 10</Text>
+        <Text style={newStyle.subtext}>Joined : 2 May 23</Text>
+      </View>
+      </ScrollView>
         <Button title="Close" onPress={closeBottomSheet} />
       </BottomSheet>
     </View>
+  
         
         <View style={styles.app}>
           <View
@@ -76,17 +99,19 @@ export default function Ting() {
                   flexDirection: 'column',
                 },
               ]}>
+                <TouchableOpacity onPress={openBottomSheet}>
               <View style={{flex: 1.5}}>
                 <Image
                   source={{
                     uri: 'https://picsum.photos/200',
-                  }}
+                  }}  
                   style={styles.logoim}
                 />
               </View>
               <View style={{flex: 6}}>
                 <Text style={{marginLeft: 20, marginTop: 10}}>User1</Text>
               </View>
+              </TouchableOpacity>
             </View>
             <View
               style={[
@@ -145,6 +170,25 @@ export default function Ting() {
                 <Text style={{marginLeft: 20, marginTop: 10}}>User1</Text>
               </View>
             </View>
+            <View
+              style={[
+                styles.container,
+                {
+                  flexDirection: 'column',
+                },
+              ]}>
+              <View style={{flex: 1.5}}>
+                <Image
+                  source={{
+                    uri: 'https://picsum.photos/204',
+                  }}
+                  style={styles.logoim}
+                />
+              </View>
+              <View style={{flex: 6}}>
+                <Text style={{marginLeft: 20, marginTop: 10}}>User1</Text>
+              </View>
+            </View>
           </View>
           <View style={styles.header}>
             <Text style={styles.text}>Discover</Text>
@@ -165,6 +209,16 @@ export default function Ting() {
                 coordinate={{
                   latitude: 37.78825,
                   longitude: -122.4324,
+                }}
+                onDragEnd={e => alert(JSON.stringify(e.nativeEvent.coordinate))}
+                title={'Test Marker'}
+                description={'This is a description of the marker'}
+              />
+               <Marker
+                draggable
+                coordinate={{
+                  latitude: 37.78824,
+                  longitude: -122.4322,
                 }}
                 onDragEnd={e => alert(JSON.stringify(e.nativeEvent.coordinate))}
                 title={'Test Marker'}
@@ -321,4 +375,38 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     borderRadius: 200,
   },
+});
+
+
+const newStyle = StyleSheet.create({
+  mainapp: {
+    marginTop: 20,
+    marginLeft: 20
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    borderRadius: 50
+  },
+  detailBox: {
+    height: 250,
+    width: "maxWidth",
+    backgroundColor: "black",
+    marginTop: 20,
+    marginLeft: 10,
+    marginRight: 10,
+    borderRadius: 30
+  },
+  text: {
+    color: "black",
+    marginLeft: 25,
+    marginTop: 20,
+    fontSize: 40
+  },
+  subtext: {
+    color: "black",
+    marginLeft: 30,
+    marginTop: 10,
+    fontSize: 20
+  }
 });
