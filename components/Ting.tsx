@@ -15,7 +15,121 @@ const logoUri = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"
 export default function Ting() {
   return (
     <>
-      
+      <SafeAreaView>
+        <View style={styles.app}>
+          <View
+            style={[
+              styles.container,
+              {
+                flexDirection: 'row',
+              },
+            ]}>
+            <View style={{flex: 6}}>
+              <Text style={styles.text}>Gm User , its Orbit</Text>
+            </View>
+            <View style={{flex: 1.5}}>
+              <Image
+                source={{
+                  uri: 'https://picsum.photos/201',
+                }}
+                style={styles.logoim}
+              />
+            </View>
+          </View>
+          <View style={styles.header}>
+            <Text style={styles.text}>Friends</Text>
+          </View>
+
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              alignContent: 'center',
+              alignItems: 'center',
+              justifyContent: 'center',
+             marginTop : 20,
+             
+            }}>
+            <View
+            style={[
+              styles.container,
+              {
+                flexDirection: 'column',
+              },
+            ]}>
+            <View style={{flex: 1.5}}>
+              <Image
+                source={{
+                  uri: 'https://picsum.photos/200',
+                }}
+                style={styles.logoim}
+              />
+            </View>
+            <View style={{flex: 6}}>
+              <Text style={{marginLeft : 20 , marginTop : 10}}>User1</Text>
+            </View>
+          </View>
+          <View
+            style={[
+              styles.container,
+              {
+                flexDirection: 'column',
+              },
+            ]}>
+            <View style={{flex: 1.5}}>
+              <Image
+                source={{
+                  uri: 'https://picsum.photos/202',
+                }}
+                style={styles.logoim}
+              />
+            </View>
+            <View style={{flex: 6}}>
+              <Text style={{marginLeft : 20 , marginTop : 10}}>User1</Text>
+            </View>
+          </View>
+          <View
+            style={[
+              styles.container,
+              {
+                flexDirection: 'column',
+              },
+            ]}>
+            <View style={{flex: 1.5}}>
+              <Image
+                source={{
+                  uri: 'https://picsum.photos/203',
+                }}
+                style={styles.logoim}
+              />
+            </View>
+            <View style={{flex: 6}}>
+              <Text style={{marginLeft : 20 , marginTop : 10}}>User1</Text>
+            </View>
+          </View>
+          <View
+            style={[
+              styles.container,
+              {
+                flexDirection: 'column',
+              },
+            ]}>
+            <View style={{flex: 1.5}}>
+              <Image
+                source={{
+                  uri: 'https://picsum.photos/204',
+                }}
+                style={styles.logoim}
+              />
+            </View>
+            <View style={{flex: 6}}>
+              <Text style={{marginLeft : 20 , marginTop : 10}}>User1</Text>
+            </View>
+          </View>          
+          </View>
+        </View>
+      </SafeAreaView>
     </>
   );
 }
