@@ -30,10 +30,10 @@ const styles = StyleSheet.create({
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     bottomSheet: {
-      backgroundColor: 'white',
+      backgroundColor: '#212529',
       borderTopLeftRadius: 15,
       borderTopRightRadius: 15,
       padding: 16,
-      maxHeight: 500, // Adjust this value as needed
+      maxHeight: 800, // Adjust this value as needed
     },
   });

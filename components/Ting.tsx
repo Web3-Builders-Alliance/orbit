@@ -7,13 +7,13 @@ import {
   View,
   SafeAreaView,
   Button,
-  ScrollView
+  ScrollView,
+  FlatList,
 } from 'react-native';
 import {Dimensions} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import BottomSheet from './BottomSheet';
-import { TouchableOpacity } from 'react-native';
-
+import {TouchableOpacity} from 'react-native';
 
 export default function Ting() {
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
@@ -29,35 +29,65 @@ export default function Ting() {
   return (
     <>
       <SafeAreaView>
-       
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      {/* <Button title="Open Bottom Sheet" onPress={openBottomSheet} /> */}
-      <BottomSheet visible={bottomSheetVisible} onClose={closeBottomSheet}>
-      <ScrollView>
-      <View style={newStyle.mainapp}>
-        <Image
-          source={{
-            uri: "https://picsum.photos/200"
-          }}
-          style={newStyle.logo}
-        />
-      </View>
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          {/* <Button title="Open Bottom Sheet" onPress={openBottomSheet} /> */}
+          <BottomSheet visible={bottomSheetVisible} onClose={closeBottomSheet}>
+            <ScrollView nestedScrollEnabled={true}>
+              <View style={newStyle.mainapp}>
+                <Image
+                  source={{
+                    uri: 'https://picsum.photos/200',
+                  }}
+                  style={newStyle.logo}
+                />
+              </View>
 
-      <View >
-        <Text style={newStyle.text}>User</Text>
-        <Text style={newStyle.subtext}>Wallet Address : </Text>
-        <Text style={newStyle.subtext}>
-          BZBT4C6UsEeow9ebLRymhtTtZj9sYDw3WkwZHHbFg2YY
-        </Text>
-        <Text style={newStyle.subtext}>Friends : 10</Text>
-        <Text style={newStyle.subtext}>Joined : 2 May 23</Text>
-      </View>
-      </ScrollView>
-        <Button title="Close" onPress={closeBottomSheet} />
-      </BottomSheet>
-    </View>
-  
-        
+              <View style={newStyle.detailBox}>
+                <Text style={newStyle.text}>User</Text>
+                <Text style={newStyle.subtext}>Wallet Address : </Text>
+                <Text style={newStyle.subtext}>
+                  BZBT4C6UsEeow9ebLRymhtTtZj9sYDw3WkwZHHbFg2YY
+                </Text>
+                <Text style={newStyle.subtext}>Friends : 10</Text>
+              </View>
+              <Text style={newStyle.text}>NFT Collection</Text>
+              <ScrollView>
+                <View style={liststyles.container}>
+                  <FlatList
+                    horizontal={true}
+                    data={[
+                      {key: 'Devin'},
+                      {key: 'Dan'},
+                      {key: 'Dominic'},
+                      {key: 'Jackson'},
+                      {key: 'James'},
+                      {key: 'Joel'},
+                      {key: 'John'},
+                      {key: 'Jillian'},
+                      {key: 'Jimmy'},
+                      {key: 'Julie'},
+                    ]}
+                    renderItem={({item}) => (
+                      <>
+                        <View>
+                          <Image
+                            source={{
+                              uri: 'https://picsum.photos/201',
+                            }}
+                            style={styles.logoim}
+                          />
+                          <Text style={liststyles.item}>{item.key}</Text>
+                        </View>
+                      </>
+                    )}
+                  />
+                </View>
+              </ScrollView>
+            </ScrollView>
+            <Button title="Close" onPress={closeBottomSheet} />
+          </BottomSheet>
+        </View>
+
         <View style={styles.app}>
           <View
             style={[
@@ -99,18 +129,18 @@ export default function Ting() {
                   flexDirection: 'column',
                 },
               ]}>
-                <TouchableOpacity onPress={openBottomSheet}>
-              <View style={{flex: 1.5}}>
-                <Image
-                  source={{
-                    uri: 'https://picsum.photos/200',
-                  }}  
-                  style={styles.logoim}
-                />
-              </View>
-              <View style={{flex: 6}}>
-                <Text style={{marginLeft: 20, marginTop: 10}}>User1</Text>
-              </View>
+              <TouchableOpacity onPress={openBottomSheet}>
+                <View style={{flex: 1.5}}>
+                  <Image
+                    source={{
+                      uri: 'https://picsum.photos/200',
+                    }}
+                    style={styles.logoim}
+                  />
+                </View>
+                <View style={{flex: 6}}>
+                  <Text style={{marginLeft: 20, marginTop: 10}}>User1</Text>
+                </View>
               </TouchableOpacity>
             </View>
             <View
@@ -214,7 +244,7 @@ export default function Ting() {
                 title={'Test Marker'}
                 description={'This is a description of the marker'}
               />
-               <Marker
+              <Marker
                 draggable
                 coordinate={{
                   latitude: 37.78824,
@@ -377,36 +407,49 @@ const styles = StyleSheet.create({
   },
 });
 
-
 const newStyle = StyleSheet.create({
   mainapp: {
     marginTop: 20,
-    marginLeft: 20
+    marginLeft: 20,
   },
   logo: {
     width: 100,
     height: 100,
-    borderRadius: 50
+    borderRadius: 50,
   },
   detailBox: {
     height: 250,
-    width: "maxWidth",
-    backgroundColor: "black",
+    backgroundColor: '#343434',
     marginTop: 20,
     marginLeft: 10,
     marginRight: 10,
-    borderRadius: 30
+    borderRadius: 30,
+    marginBottom: 20,
   },
   text: {
-    color: "black",
+    color: 'white',
     marginLeft: 25,
     marginTop: 20,
-    fontSize: 40
+    fontSize: 28,
   },
   subtext: {
-    color: "black",
+    color: 'white',
     marginLeft: 30,
     marginTop: 10,
-    fontSize: 20
-  }
+    fontSize: 18,
+  },
+});
+
+const liststyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 22,
+    marginBottom : 20,
+    marginLeft : 15
+  },
+  item: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
+  },
 });
