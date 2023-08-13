@@ -89,6 +89,13 @@ def reactNativeArchitectures() {
 }
 
 android {
+
+    project.ext.vectoricons = [
+	iconFontNames: ['MaterialCommunityIcons.ttf'] // Add fonts needed
+]
+
+    apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+
     ndkVersion rootProject.ext.ndkVersion
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -110,6 +117,7 @@ android {
             include (*reactNativeArchitectures())
         }
     }
+
     signingConfigs {
         debug {
             storeFile file('debug.keystore')

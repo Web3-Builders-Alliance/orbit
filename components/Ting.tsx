@@ -72,7 +72,7 @@ export default function Ting() {
                         <View>
                           <Image
                             source={{
-                              uri: 'https://picsum.photos/201',
+                              uri: 'https://picsum.photos/202',
                             }}
                             style={newStyle.logo}
                           />
@@ -84,7 +84,21 @@ export default function Ting() {
                 </View>
               </ScrollView>
             </ScrollView>
-            <Button title="Close" onPress={closeBottomSheet} />
+            <TouchableOpacity
+              onPress={
+                closeBottomSheet
+              }>
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 15,
+                  height : 45
+                }}>
+                <Text style={{color: 'black' , fontSize : 18}}>Close</Text>
+              </View>
+            </TouchableOpacity>
           </BottomSheet>
         </View>
 
@@ -403,7 +417,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
     alignItems: 'center',
     justifyContent: 'flex-end',
-    borderRadius: 200,
+    borderRadius: 50,
+    overflow: 'hidden',
   },
 });
 
@@ -416,7 +431,7 @@ const newStyle = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 10,
-    margin : 5
+    margin: 5,
   },
   detailBox: {
     height: 220,
@@ -432,7 +447,7 @@ const newStyle = StyleSheet.create({
     marginLeft: 25,
     marginTop: 20,
     fontSize: 25,
-    fontWeight : 'bold'
+    fontWeight: 'bold',
   },
   subtext: {
     color: 'white',
@@ -446,8 +461,8 @@ const liststyles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 22,
-    marginBottom : 20,
-    marginLeft : 15
+    marginBottom: 20,
+    marginLeft: 15,
   },
   item: {
     padding: 10,
