@@ -74,7 +74,7 @@ export default function Ting() {
                             source={{
                               uri: 'https://picsum.photos/201',
                             }}
-                            style={styles.logoim}
+                            style={newStyle.logo}
                           />
                           <Text style={liststyles.item}>{item.key}</Text>
                         </View>
@@ -413,12 +413,13 @@ const newStyle = StyleSheet.create({
     marginLeft: 20,
   },
   logo: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 80,
+    height: 80,
+    borderRadius: 10,
+    margin : 5
   },
   detailBox: {
-    height: 250,
+    height: 220,
     backgroundColor: '#343434',
     marginTop: 20,
     marginLeft: 10,
@@ -430,7 +431,8 @@ const newStyle = StyleSheet.create({
     color: 'white',
     marginLeft: 25,
     marginTop: 20,
-    fontSize: 28,
+    fontSize: 25,
+    fontWeight : 'bold'
   },
   subtext: {
     color: 'white',
