@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Image,
   Pressable,
@@ -9,6 +9,7 @@ import {
   Button,
   ScrollView,
   FlatList,
+  PermissionsAndroid,
 } from 'react-native';
 import {Dimensions} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
@@ -16,8 +17,49 @@ import BottomSheet from './BottomSheet';
 import firestore from '@react-native-firebase/firestore';
 import {TouchableOpacity} from 'react-native';
 import DisconnectButton from './DisconnectButton';
+import Geoloaction from 'react-native-geolocation-service';
 
 export default function Ting() {
+  useEffect(() => {
+    requestCameraPermission();
+  }, []);
+
+  const requestCameraPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Cool Photo App Camera Permission',
+          message:
+            'Cool Photo App needs access to your camera ' +
+            'so you can take awesome pictures.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('You can use the camera');
+      } else {
+        console.log('Camera permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  const getLocation = () => {
+    Geoloaction.getCurrentPosition(
+      position => {
+        console.log(position);
+      },
+      error => {
+        console.log(error.code, error.message);
+      },
+      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+    );
+  };
+
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
   const [users, setusers] = useState([]);
 
@@ -133,7 +175,7 @@ export default function Ting() {
                 source={{
                   uri: 'https://picsum.photos/206',
                 }}
-                style={styles.logoim}
+                style={styles.headerlogoim}
               />
             </View>
           </View>
@@ -149,7 +191,7 @@ export default function Ting() {
               alignContent: 'center',
               alignItems: 'center',
               justifyContent: 'center',
-              marginTop: 20,
+              marginTop: 5,
             }}>
             <View
               style={[
@@ -249,15 +291,15 @@ export default function Ting() {
               </View>
             </View>
           </View>
-          <View style={styles.header}>
+          <View style={styles.discoverHeading}>
             <Text style={styles.text}>Discover</Text>
           </View>
 
           <View style={styles.mapcontainer}>
             <MapView
-            zoomEnabled={true}
-            showsUserLocation={true}
-            followsUserLocation={true}
+              zoomEnabled={true}
+              showsUserLocation={true}
+              followsUserLocation={true}
               style={styles.mapStyle}
               initialRegion={{
                 latitude: 28.56116880061382,
@@ -266,7 +308,7 @@ export default function Ting() {
                 longitudeDelta: 0.00421,
               }}
               customMapStyle={mapStyle}>
-              {users.map((item , key) => {
+              {users.map((item, key) => {
                 return (
                   <>
                     <Marker
@@ -284,7 +326,6 @@ export default function Ting() {
                   </>
                 );
               })}
-
             </MapView>
           </View>
           <View style={bottomstyles.container}>
@@ -298,14 +339,17 @@ export default function Ting() {
                     borderRadius: 15,
                     height: 40,
                   }}>
-                  <Text style={{color: 'black'}}>Find People</Text>
+                  <Text
+                    style={{color: 'black', fontSize: 16, fontWeight: 'bold'}}>
+                    Find People
+                  </Text>
                 </View>
               </TouchableOpacity>
             </View>
             <View style={bottomstyles.buttonContainer}>
               <TouchableOpacity
                 onPress={() => {
-                  /* do this */
+                  getLocation();
                 }}>
                 <View
                   style={{
@@ -315,22 +359,34 @@ export default function Ting() {
                     borderRadius: 15,
                     height: 40,
                   }}>
-                  <Text style={{color: 'black'}}>Find Events</Text>
+                  <Text
+                    style={{color: 'black', fontSize: 16, fontWeight: 'bold'}}>
+                    Find Events
+                  </Text>
                 </View>
               </TouchableOpacity>
             </View>
           </View>
-          <View
-            style={{
-              backgroundColor: 'red',
-              marginTop: 10,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 15,
-              marginLeft: 10,
-              marginRight: 10,
-              height: 40,
-            }}>
+
+          <View style={bottomstyles.container}>
+            <View style={bottomstyles.buttonContainer}>
+              <TouchableOpacity onPress={getData}>
+                <View
+                  style={{
+                    backgroundColor: 'white',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: 15,
+                    height: 40,
+                  }}>
+                  <Text
+                    style={{color: 'black', fontSize: 16, fontWeight: 'bold'}}>
+                    Find People
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            
             <DisconnectButton title="Disconnect Button" />
           </View>
         </View>
@@ -426,7 +482,11 @@ const styles = StyleSheet.create({
     height: 80,
   },
   header: {
-    paddingTop: 20,
+    paddingTop: 15,
+  },
+  discoverHeading: {
+    padding: 1,
+    marginTop: 20,
   },
   title: {
     fontWeight: 'bold',
@@ -448,7 +508,7 @@ const styles = StyleSheet.create({
     fontFamily: 'monospace, monospace',
   },
   container: {
-    paddingTop: 10,
+    paddingTop: 8,
   },
   tinyLogo: {
     width: 70,
@@ -460,6 +520,12 @@ const styles = StyleSheet.create({
   logoim: {
     width: 65,
     height: 65,
+    marginLeft: 10,
+    borderRadius: 50,
+  },
+  headerlogoim : {
+    width: 45,
+    height: 45,
     marginLeft: 10,
     borderRadius: 50,
   },
