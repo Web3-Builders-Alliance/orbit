@@ -19,7 +19,7 @@ export default function DisconnectButton(props: Props) {
       }}>
       <View
         style={{
-          backgroundColor : "red",
+          backgroundColor : "black",
           marginTop: -18,
           alignItems: 'center',
           justifyContent: 'center',
@@ -28,7 +28,7 @@ export default function DisconnectButton(props: Props) {
           marginRight: 10,
           height: 40,
         }}>
-        <Text style={{color: 'black', fontSize: 16, fontWeight: 'bold'}}>
+        <Text style={{color: 'white', fontSize: 16, fontWeight: 'bold'}}>
           Dissconnect 
         </Text>
       </View>

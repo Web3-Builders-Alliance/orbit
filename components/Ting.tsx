@@ -11,6 +11,7 @@ import {
   FlatList,
   PermissionsAndroid,
 } from 'react-native';
+import {BsFillPersonFill} from 'react-icons/bs';
 import {Dimensions} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import BottomSheet from './BottomSheet';
@@ -321,8 +322,12 @@ export default function Ting() {
                         alert(JSON.stringify(e.nativeEvent.coordinate))
                       }
                       title={'Test Marker'}
-                      description={'This is a description of the marker'}
-                    />
+                      description={'This is a description of the marker'}>
+                      <Image
+                        source={require("../img/man.png")}
+                        style={styles.markerlogoim}
+                      />
+                    </Marker>
                   </>
                 );
               })}
@@ -386,7 +391,7 @@ export default function Ting() {
                 </View>
               </TouchableOpacity>
             </View>
-            
+
             <DisconnectButton title="Disconnect Button" />
           </View>
         </View>
@@ -523,7 +528,13 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     borderRadius: 50,
   },
-  headerlogoim : {
+  markerlogoim : {
+    width: 50,
+    height: 50,
+    marginLeft: 10,
+    borderRadius: 50,
+  },
+  headerlogoim: {
     width: 45,
     height: 45,
     marginLeft: 10,
