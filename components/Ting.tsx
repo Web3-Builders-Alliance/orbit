@@ -21,6 +21,7 @@ import DisconnectButton from './DisconnectButton';
 import Geoloaction from 'react-native-geolocation-service';
 
 export default function Ting() {
+  const [shyft , setShyft] = useState([])
   useEffect(() => {
     requestCameraPermission();
   }, []);
@@ -87,6 +88,24 @@ export default function Ting() {
       });
   };
 
+  const allAllNFTs = () => {
+    var myHeaders = new Headers();
+    myHeaders.append('x-api-key', 'HI_eHFd0SX8ykSDW');
+
+    var requestOptions : any = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow',
+    };
+
+    fetch("https://api.shyft.to/sol/v1/nft/read_all?network=mainnet-beta&address=44n5CYX18L6p4VxVECE9ZNYrAGB9GKD477b78kPNq5Su", requestOptions)
+      .then(response => response.json())
+      .then(result => setShyft(result.result))
+      .catch(error => console.log('error', error));
+
+      console.log(shyft)
+  };
+
   return (
     <>
       <SafeAreaView>
@@ -116,28 +135,17 @@ export default function Ting() {
                 <View style={liststyles.container}>
                   <FlatList
                     horizontal={true}
-                    data={[
-                      {key: 'Devin'},
-                      {key: 'Dan'},
-                      {key: 'Dominic'},
-                      {key: 'Jackson'},
-                      {key: 'James'},
-                      {key: 'Joel'},
-                      {key: 'John'},
-                      {key: 'Jillian'},
-                      {key: 'Jimmy'},
-                      {key: 'Julie'},
-                    ]}
+                    data={shyft}
                     renderItem={({item}) => (
                       <>
                         <View>
                           <Image
                             source={{
-                              uri: 'https://picsum.photos/202',
+                              uri: item.image_uri,
                             }}
                             style={newStyle.logo}
                           />
-                          <Text style={liststyles.item}>{item.key}</Text>
+                          {/* <Text style={liststyles.item}>{item.name}</Text> */}
                         </View>
                       </>
                     )}
@@ -310,26 +318,50 @@ export default function Ting() {
               }}
               customMapStyle={mapStyle}>
               {users.map((item, key) => {
-                return (
-                  <>
-                    <Marker
-                      draggable
-                      coordinate={{
-                        latitude: item.Lat,
-                        longitude: item.Lng,
-                      }}
-                      onDragEnd={e =>
-                        alert(JSON.stringify(e.nativeEvent.coordinate))
-                      }
-                      title={'Test Marker'}
-                      description={'This is a description of the marker'}>
-                      <Image
-                        source={require("../img/man.png")}
-                        style={styles.markerlogoim}
-                      />
-                    </Marker>
-                  </>
-                );
+                if (item.gender == 'male') {
+                  return (
+                    <>
+                      <Marker
+                        draggable
+                        coordinate={{
+                          latitude: item.Lat,
+                          longitude: item.Lng,
+                        }}
+                        onDragEnd={e =>
+                          alert(JSON.stringify(e.nativeEvent.coordinate))
+                        }
+                        title={'Test Marker'}
+                        description={'This is a description of the marker'}>
+                        <Image
+                          source={require('../img/man.png')}
+                          style={styles.markerlogoim}
+                        />
+                      </Marker>
+                    </>
+                  );
+                }
+                if (item.gender == 'female') {
+                  return (
+                    <>
+                      <Marker
+                        draggable
+                        coordinate={{
+                          latitude: item.Lat,
+                          longitude: item.Lng,
+                        }}
+                        onDragEnd={e =>
+                          alert(JSON.stringify(e.nativeEvent.coordinate))
+                        }
+                        title={'Test Marker'}
+                        description={'This is a description of the marker'}>
+                        <Image
+                          source={require('../img/wooman.png')}
+                          style={styles.markerlogoim}
+                        />
+                      </Marker>
+                    </>
+                  );
+                }
               })}
             </MapView>
           </View>
@@ -354,7 +386,7 @@ export default function Ting() {
             <View style={bottomstyles.buttonContainer}>
               <TouchableOpacity
                 onPress={() => {
-                  getLocation();
+                  allAllNFTs();
                 }}>
                 <View
                   style={{
@@ -386,7 +418,7 @@ export default function Ting() {
                   }}>
                   <Text
                     style={{color: 'black', fontSize: 16, fontWeight: 'bold'}}>
-                    Find People
+                    Host Event
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -528,7 +560,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     borderRadius: 50,
   },
-  markerlogoim : {
+  markerlogoim: {
     width: 50,
     height: 50,
     marginLeft: 10,
@@ -608,6 +640,7 @@ const liststyles = StyleSheet.create({
     padding: 10,
     fontSize: 18,
     height: 44,
+    alignItems : "center"
   },
 });
 
