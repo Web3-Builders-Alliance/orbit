@@ -62,56 +62,7 @@ export default function MainScreen() {
                 />
                 /> */}
                   <Ting />
-                  <View style={bottomstyles.container}>
-                    <View style={bottomstyles.buttonContainer}>
-                      <TouchableOpacity
-                        onPress={() => {
-                          /* do this */
-                        }}>
-                        <View
-                          style={{
-                            backgroundColor: 'white',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            borderRadius: 15,
-                            height : 40
-                          }}>
-                          <Text style={{color: 'black'}}>Find People</Text>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                    <View style={bottomstyles.buttonContainer}>
-                    <TouchableOpacity
-                        onPress={() => {
-                          /* do this */
-                        }}>
-                        <View
-                          style={{
-                            backgroundColor: 'white',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            borderRadius: 15,
-                            height : 40
-                          }}>
-                          <Text style={{color: 'black'}}>Find Events</Text>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                  <View 
-                   style={{
-                    backgroundColor: 'red',
-                    marginTop : 10,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderRadius: 15,
-                    marginLeft : 10,
-                    marginRight : 10,
-                    height : 40
-                  }}
-                  >
-                    <DisconnectButton  title='Disconnect Button' />
-                    </View>
+                 
                   {/* <CallInstructionsFrontEnd/> */}
                   {/* </Section> */}
                 </ScrollView>
@@ -195,21 +146,5 @@ const styles = StyleSheet.create({
   containerimp: {
     flex: 1,
     padding: 10,
-  },
-});
-
-const bottomstyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'row',
-    marginTop: 20,
-    marginLeft: 10,
-    marginRight: 10,
-    justifyContent: 'center',
-  },
-  buttonContainer: {
-    flex: 1,
-    margin: 5,
-    color: 'white',
   },
 });

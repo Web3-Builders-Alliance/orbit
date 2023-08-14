@@ -56,7 +56,7 @@ export default function App() {
               fontSize: 25,
               style : {
                 position : 'absolute',
-                bottom : 15,
+                bottom : 28,
                 left : 20,
                 right : 20 ,
                 elevation : 0,

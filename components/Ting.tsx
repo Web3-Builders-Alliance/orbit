@@ -13,10 +13,13 @@ import {
 import {Dimensions} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import BottomSheet from './BottomSheet';
+import firestore from '@react-native-firebase/firestore';
 import {TouchableOpacity} from 'react-native';
+import DisconnectButton from './DisconnectButton';
 
 export default function Ting() {
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
+  const [users, setusers] = useState([]);
 
   const openBottomSheet = () => {
     setBottomSheetVisible(true);
@@ -24,6 +27,21 @@ export default function Ting() {
 
   const closeBottomSheet = () => {
     setBottomSheetVisible(false);
+  };
+
+  const getData = () => {
+    const array: any[] = [];
+    firestore()
+      .collection('Users')
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(documnetSnapshot => {
+          //console.log(documnetSnapshot.data())
+          array.push(documnetSnapshot.data());
+        });
+        setusers(array);
+        console.log(users);
+      });
   };
 
   return (
@@ -84,19 +102,16 @@ export default function Ting() {
                 </View>
               </ScrollView>
             </ScrollView>
-            <TouchableOpacity
-              onPress={
-                closeBottomSheet
-              }>
+            <TouchableOpacity onPress={closeBottomSheet}>
               <View
                 style={{
                   backgroundColor: 'white',
                   alignItems: 'center',
                   justifyContent: 'center',
                   borderRadius: 15,
-                  height : 45
+                  height: 45,
                 }}>
-                <Text style={{color: 'black' , fontSize : 18}}>Close</Text>
+                <Text style={{color: 'black', fontSize: 18}}>Close</Text>
               </View>
             </TouchableOpacity>
           </BottomSheet>
@@ -240,35 +255,83 @@ export default function Ting() {
 
           <View style={styles.mapcontainer}>
             <MapView
+            zoomEnabled={true}
+            showsUserLocation={true}
+            followsUserLocation={true}
               style={styles.mapStyle}
               initialRegion={{
-                latitude: 37.78825,
-                longitude: -122.4324,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
+                latitude: 28.56116880061382,
+                longitude: 77.29191947094775,
+                latitudeDelta: 0.00922,
+                longitudeDelta: 0.00421,
               }}
               customMapStyle={mapStyle}>
-              <Marker
-                draggable
-                coordinate={{
-                  latitude: 37.78825,
-                  longitude: -122.4324,
-                }}
-                onDragEnd={e => alert(JSON.stringify(e.nativeEvent.coordinate))}
-                title={'Test Marker'}
-                description={'This is a description of the marker'}
-              />
-              <Marker
-                draggable
-                coordinate={{
-                  latitude: 37.78824,
-                  longitude: -122.4322,
-                }}
-                onDragEnd={e => alert(JSON.stringify(e.nativeEvent.coordinate))}
-                title={'Test Marker'}
-                description={'This is a description of the marker'}
-              />
+              {users.map((item , key) => {
+                return (
+                  <>
+                    <Marker
+                      draggable
+                      coordinate={{
+                        latitude: item.Lat,
+                        longitude: item.Lng,
+                      }}
+                      onDragEnd={e =>
+                        alert(JSON.stringify(e.nativeEvent.coordinate))
+                      }
+                      title={'Test Marker'}
+                      description={'This is a description of the marker'}
+                    />
+                  </>
+                );
+              })}
+
             </MapView>
+          </View>
+          <View style={bottomstyles.container}>
+            <View style={bottomstyles.buttonContainer}>
+              <TouchableOpacity onPress={getData}>
+                <View
+                  style={{
+                    backgroundColor: 'white',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: 15,
+                    height: 40,
+                  }}>
+                  <Text style={{color: 'black'}}>Find People</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            <View style={bottomstyles.buttonContainer}>
+              <TouchableOpacity
+                onPress={() => {
+                  /* do this */
+                }}>
+                <View
+                  style={{
+                    backgroundColor: 'white',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: 15,
+                    height: 40,
+                  }}>
+                  <Text style={{color: 'black'}}>Find Events</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View
+            style={{
+              backgroundColor: 'red',
+              marginTop: 10,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 15,
+              marginLeft: 10,
+              marginRight: 10,
+              height: 40,
+            }}>
+            <DisconnectButton title="Disconnect Button" />
           </View>
         </View>
       </SafeAreaView>
@@ -468,5 +531,21 @@ const liststyles = StyleSheet.create({
     padding: 10,
     fontSize: 18,
     height: 44,
+  },
+});
+
+const bottomstyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'row',
+    marginTop: 20,
+    marginLeft: 10,
+    marginRight: 10,
+    justifyContent: 'center',
+  },
+  buttonContainer: {
+    flex: 1,
+    margin: 5,
+    color: 'white',
   },
 });
