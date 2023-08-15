@@ -227,39 +227,43 @@ export default function Ting() {
     setTimeout(() => {
       signTransaction(
         encoded_transaction.result.encoded_transaction,
-        'tmiFaNmqR5p5bnjP2kcCndexdUWQaRGPonGNptvEGX5UYMVo4nEGq1xEY5h2K1T89tXgASQGaJw4a5auaYjkBQs',
+        '',
       );
-    },500)
-
-   
-    
-
-    // var myHeaders = new Headers();
-    // myHeaders.append('Content-Type', 'application/json');
-    // myHeaders.append('x-api-key', 'HI_eHFd0SX8ykSDW');
-
-    // var raw = JSON.stringify({
-    //   network: 'devnet',
-    //   creator_wallet: '2JSg1MdNqRg9z4RP7yiE2NV86fux2BNtF3pSDjhoi767',
-    //   metadata_uri:
-    //     'https://gateway.pinata.cloud/ipfs/QmYmUb5MHZwYovnQg9qANTJUi7R8VaE5CetfssczaSWn5K',
-    //   merkle_tree: '2nMTLd2NgjGNwXwWwfEHaoB7Lvpw13ufvxiUauhLqJhG',
-    //   max_supply: 1,
-    //   is_mutable: true,
-    // });
-
-    // var requestOptions : any = {
-    //   method: 'POST',
-    //   headers: myHeaders,
-    //   body: raw,
-    //   redirect: 'follow',
-    // };
-
-    // fetch('https://api.shyft.to/sol/v1/nft/compressed/mint', requestOptions)
-    //   .then(response => response.text())
-    //   .then(result => console.log(result))
-    //   .catch(error => console.log('error', error));
+    }, 500);
+    setTimeout(() => {
+      finalCFTMint();
+    },1000);
   };
+
+  const finalCFTMint = () => {
+    var myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    myHeaders.append('x-api-key', 'HI_eHFd0SX8ykSDW');
+
+    var raw = JSON.stringify({
+      network: 'devnet',
+      creator_wallet: '2JSg1MdNqRg9z4RP7yiE2NV86fux2BNtF3pSDjhoi767',
+      metadata_uri:
+        'https://gateway.pinata.cloud/ipfs/QmYmUb5MHZwYovnQg9qANTJUi7R8VaE5CetfssczaSWn5K',
+      merkle_tree: encoded_transaction.result.tree,
+      max_supply: 1,
+      is_mutable: true,
+    });
+
+    var requestOptions: any = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow',
+    };
+
+    fetch('https://api.shyft.to/sol/v1/nft/compressed/mint', requestOptions)
+      .then(response => response.json())
+      .then(result  => signTransaction(result.result.encoded_transaction , ""))
+      .catch(error => console.log('error', error));
+  };
+
+
 
   return (
     <>
@@ -679,7 +683,7 @@ export default function Ting() {
 
           <View style={bottomstyles.container}>
             <View style={bottomstyles.buttonContainer}>
-              <TouchableOpacity onPress={getData}>
+              <TouchableOpacity>
                 <View
                   style={{
                     backgroundColor: 'white',
