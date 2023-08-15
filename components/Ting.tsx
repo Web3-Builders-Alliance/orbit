@@ -11,6 +11,7 @@ import {
   FlatList,
   PermissionsAndroid,
 } from 'react-native';
+import {clusterApiUrl, Keypair, Transaction, Connection} from '@solana/web3.js';
 import {BsFillPersonFill} from 'react-icons/bs';
 import {Dimensions} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
@@ -19,11 +20,19 @@ import firestore from '@react-native-firebase/firestore';
 import {TouchableOpacity} from 'react-native';
 import DisconnectButton from './DisconnectButton';
 import Geoloaction from 'react-native-geolocation-service';
+import * as bs58 from 'bs58';
 
 export default function Ting() {
   const [shyft, setShyft] = useState([]);
-  const [personData , setPersonData] = useState([])
-  const [eventData , setEventData] = useState([])
+  const [personData, setPersonData] = useState([]);
+  const [eventData, setEventData] = useState([]);
+  const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
+  const [openBottomSheetmarker, setBottomSheetMarker] = useState(false);
+  const [isit, setisit] = useState(false);
+  const [personisit, setPeronisit] = useState(false);
+  const [users, setusers] = useState([]);
+  const [encoded_transaction, setEncodeTranaction] : any = useState([]);
+
   useEffect(() => {
     requestCameraPermission();
   }, []);
@@ -64,13 +73,6 @@ export default function Ting() {
     );
   };
 
-  const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
-  const [openBottomSheetmarker, setBottomSheetMarker] = useState(false);
-  const [isit , setisit] = useState(false)
-  const [personisit ,setPeronisit] = useState(false)
-
-  const [users, setusers] = useState([]);
-
   const openBottomSheet = () => {
     setBottomSheetVisible(true);
   };
@@ -100,7 +102,6 @@ export default function Ting() {
         setusers(array);
         console.log(users);
       });
-     
   };
 
   const allAllNFTs = () => {
@@ -125,8 +126,8 @@ export default function Ting() {
   };
 
   const getDataForBottomSheet = (Lat: number, Lng: number) => {
-    setisit(false)
-    const array :any[] = []
+    setisit(false);
+    const array: any[] = [];
     firestore()
       .collection('Users')
       .where('Lat', '==', Lat)
@@ -135,21 +136,21 @@ export default function Ting() {
         querySnapshot.forEach(documentSnapshot => {
           if (documentSnapshot.exists) {
             //console.log(documentSnapshot.data());
-            array.push(documentSnapshot.data())
+            array.push(documentSnapshot.data());
           } else {
             console.log('Data not found');
           }
         });
-        setEventData(array)
-        console.log(eventData)
-        setisit(true)
+        setEventData(array);
+        console.log(eventData);
+        setisit(true);
       });
-      openBottomSheetMarker()
+    openBottomSheetMarker();
   };
 
   const ching = (Lat: number, Lng: number) => {
-    setPeronisit(false)
-    const array :any[] = []
+    setPeronisit(false);
+    const array: any[] = [];
     firestore()
       .collection('Users')
       .where('Lat', '==', Lat)
@@ -158,17 +159,106 @@ export default function Ting() {
         querySnapshot.forEach(documentSnapshot => {
           if (documentSnapshot.exists) {
             //console.log(documentSnapshot.data());
-            array.push(documentSnapshot.data())
+            array.push(documentSnapshot.data());
           } else {
             console.log('Data not found');
           }
         });
-        setPersonData(array)
-        console.log(personData)
-        setPeronisit(true)
+        setPersonData(array);
+        console.log(personData);
+        setPeronisit(true);
       });
-      openBottomSheet()
+    openBottomSheet();
   };
+
+  const signTransaction = async (
+    encodedTransaction: string,
+    fromPrivateKey: string,
+  ) => {
+    try {
+      const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
+      const feePayer = Keypair.fromSecretKey(bs58.decode(fromPrivateKey));
+      const recoveredTransaction = Transaction.from(
+        Buffer.from(encodedTransaction, 'base64'),
+      );
+      recoveredTransaction.partialSign(feePayer);
+      const txnSignature = await connection.sendRawTransaction(
+        recoveredTransaction.serialize(),
+      );
+      console.log(txnSignature);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const mintCNFT = () => {
+    var myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    myHeaders.append('x-api-key', 'HI_eHFd0SX8ykSDW');
+
+    var raw = JSON.stringify({
+      network: 'devnet',
+      wallet_address: '2JSg1MdNqRg9z4RP7yiE2NV86fux2BNtF3pSDjhoi767',
+      max_depth_size_pair: {
+        max_depth: 14,
+        max_buffer_size: 64,
+      },
+      canopy_depth: 10,
+    });
+
+    var requestOptions: any = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow',
+    };
+
+    fetch(
+      'https://api.shyft.to/sol/v1/nft/compressed/create_tree',
+      requestOptions,
+    )
+      .then(response => response.json())
+      .then(result => setEncodeTranaction(result))
+      .catch(error => console.log('error', error));
+
+      console.log(encoded_transaction.result.encoded_transaction)
+      console.log(encoded_transaction.result.tree)
+
+    setTimeout(() => {
+      signTransaction(
+        encoded_transaction.result.encoded_transaction,
+        'tmiFaNmqR5p5bnjP2kcCndexdUWQaRGPonGNptvEGX5UYMVo4nEGq1xEY5h2K1T89tXgASQGaJw4a5auaYjkBQs',
+      );
+    }),[500];
+
+    // var myHeaders = new Headers();
+    // myHeaders.append('Content-Type', 'application/json');
+    // myHeaders.append('x-api-key', 'HI_eHFd0SX8ykSDW');
+
+    // var raw = JSON.stringify({
+    //   network: 'devnet',
+    //   creator_wallet: '2JSg1MdNqRg9z4RP7yiE2NV86fux2BNtF3pSDjhoi767',
+    //   metadata_uri:
+    //     'https://gateway.pinata.cloud/ipfs/QmYmUb5MHZwYovnQg9qANTJUi7R8VaE5CetfssczaSWn5K',
+    //   merkle_tree: '2nMTLd2NgjGNwXwWwfEHaoB7Lvpw13ufvxiUauhLqJhG',
+    //   max_supply: 1,
+    //   is_mutable: true,
+    // });
+
+    // var requestOptions : any = {
+    //   method: 'POST',
+    //   headers: myHeaders,
+    //   body: raw,
+    //   redirect: 'follow',
+    // };
+
+    // fetch('https://api.shyft.to/sol/v1/nft/compressed/mint', requestOptions)
+    //   .then(response => response.text())
+    //   .then(result => console.log(result))
+    //   .catch(error => console.log('error', error));
+  };
+
+  
 
   return (
     <>
@@ -180,28 +270,29 @@ export default function Ting() {
               <View style={newStyle.mainapp}>
                 {personisit ? (
                   <>
-                  <Image
-                  source={{
-                    uri: personData[0].image,
-                  }}
-                  style={newStyle.logo}
-                />
+                    <Image
+                      source={{
+                        uri: personData[0].image,
+                      }}
+                      style={newStyle.logo}
+                    />
                   </>
-                ):(
+                ) : (
                   <>
-                  <Image
-                  source={{
-                    uri: 'https://picsum.photos/200',
-                  }}
-                  style={newStyle.logo}
-                />
+                    <Image
+                      source={{
+                        uri: 'https://picsum.photos/200',
+                      }}
+                      style={newStyle.logo}
+                    />
                   </>
                 )}
-                
               </View>
 
               <View style={newStyle.detailBox}>
-                <Text style={newStyle.text}>{personisit ? personData[0].name : "Name"}</Text>
+                <Text style={newStyle.text}>
+                  {personisit ? personData[0].name : 'Name'}
+                </Text>
                 <Text style={newStyle.subtext}>Wallet Address : </Text>
                 <Text style={newStyle.subtext}>
                   BZBT4C6UsEeow9ebLRymhtTtZj9sYDw3WkwZHHbFg2YY
@@ -254,35 +345,36 @@ export default function Ting() {
               <View style={newStyle.mainapp}>
                 {isit ? (
                   <>
-                  <Image
-                  source={{
-                    uri: eventData[0].img,
-                  }}
-                  style={newStyle.logoPointer}
-                />
+                    <Image
+                      source={{
+                        uri: eventData[0].img,
+                      }}
+                      style={newStyle.logoPointer}
+                    />
                   </>
-                ):(
+                ) : (
                   <>
-                  <Image
-                  source={{
-                    uri: 'https://picsum.photos/200',
-                  }}
-                  style={newStyle.logoPointer}
-                />
+                    <Image
+                      source={{
+                        uri: 'https://picsum.photos/200',
+                      }}
+                      style={newStyle.logoPointer}
+                    />
                   </>
                 )}
-                
               </View>
 
               <View style={newStyle.detailBox}>
                 <Text style={newStyle.text}>
-                  {isit ? eventData[0].name : "TestEent"}
+                  {isit ? eventData[0].name : 'TestEent'}
                 </Text>
                 <Text style={newStyle.subtext}>
-                  {isit? eventData[0].desc : "Event Description"}
+                  {isit ? eventData[0].desc : 'Event Description'}
                 </Text>
 
-                <Text style={newStyle.subtext}>Time : {isit?eventData[0].time : "1500:1900"}</Text>
+                <Text style={newStyle.subtext}>
+                  Time : {isit ? eventData[0].time : '1500:1900'}
+                </Text>
                 <TouchableOpacity onPress={closeBottomSheetMarker}>
                   <View
                     style={{
@@ -473,7 +565,7 @@ export default function Ting() {
                     return (
                       <>
                         <Marker
-                          onPress={()=> ching(item.Lat , item.Lat)}
+                          onPress={() => ching(item.Lat, item.Lat)}
                           draggable
                           coordinate={{
                             latitude: item.Lat,
@@ -496,7 +588,7 @@ export default function Ting() {
                     return (
                       <>
                         <Marker
-                          onPress={()=> ching(item.Lat , item.Lat)}
+                          onPress={() => ching(item.Lat, item.Lat)}
                           draggable
                           coordinate={{
                             latitude: item.Lat,
@@ -565,7 +657,7 @@ export default function Ting() {
             <View style={bottomstyles.buttonContainer}>
               <TouchableOpacity
                 onPress={() => {
-                  allAllNFTs();
+                  mintCNFT();
                 }}>
                 <View
                   style={{
