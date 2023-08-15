@@ -146,6 +146,29 @@ export default function Ting() {
       openBottomSheetMarker()
   };
 
+  // const ching = (Lat: number, Lng: number) => {
+  //   setisit(false)
+  //   const array :any[] = []
+  //   firestore()
+  //     .collection('Users')
+  //     .where('Lat', '==', Lat)
+  //     .get()
+  //     .then(querySnapshot => {
+  //       querySnapshot.forEach(documentSnapshot => {
+  //         if (documentSnapshot.exists) {
+  //           //console.log(documentSnapshot.data());
+  //           array.push(documentSnapshot.data())
+  //         } else {
+  //           console.log('Data not found');
+  //         }
+  //       });
+  //       (array)
+  //       console.log(eventData)
+  //       setisit(true)
+  //     });
+  //     openBottomSheet()
+  // };
+
   return (
     <>
       <SafeAreaView>
