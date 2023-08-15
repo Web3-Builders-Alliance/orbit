@@ -67,6 +67,7 @@ export default function Ting() {
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
   const [openBottomSheetmarker, setBottomSheetMarker] = useState(false);
   const [isit , setisit] = useState(false)
+  const [personisit ,setPeronisit] = useState(false)
 
   const [users, setusers] = useState([]);
 
@@ -146,28 +147,28 @@ export default function Ting() {
       openBottomSheetMarker()
   };
 
-  // const ching = (Lat: number, Lng: number) => {
-  //   setisit(false)
-  //   const array :any[] = []
-  //   firestore()
-  //     .collection('Users')
-  //     .where('Lat', '==', Lat)
-  //     .get()
-  //     .then(querySnapshot => {
-  //       querySnapshot.forEach(documentSnapshot => {
-  //         if (documentSnapshot.exists) {
-  //           //console.log(documentSnapshot.data());
-  //           array.push(documentSnapshot.data())
-  //         } else {
-  //           console.log('Data not found');
-  //         }
-  //       });
-  //       (array)
-  //       console.log(eventData)
-  //       setisit(true)
-  //     });
-  //     openBottomSheet()
-  // };
+  const ching = (Lat: number, Lng: number) => {
+    setPeronisit(false)
+    const array :any[] = []
+    firestore()
+      .collection('Users')
+      .where('Lat', '==', Lat)
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(documentSnapshot => {
+          if (documentSnapshot.exists) {
+            //console.log(documentSnapshot.data());
+            array.push(documentSnapshot.data())
+          } else {
+            console.log('Data not found');
+          }
+        });
+        setPersonData(array)
+        console.log(personData)
+        setPeronisit(true)
+      });
+      openBottomSheet()
+  };
 
   return (
     <>
@@ -177,16 +178,30 @@ export default function Ting() {
           <BottomSheet visible={bottomSheetVisible} onClose={closeBottomSheet}>
             <ScrollView nestedScrollEnabled={true}>
               <View style={newStyle.mainapp}>
-                <Image
+                {personisit ? (
+                  <>
+                  <Image
+                  source={{
+                    uri: personData[0].image,
+                  }}
+                  style={newStyle.logo}
+                />
+                  </>
+                ):(
+                  <>
+                  <Image
                   source={{
                     uri: 'https://picsum.photos/200',
                   }}
                   style={newStyle.logo}
                 />
+                  </>
+                )}
+                
               </View>
 
               <View style={newStyle.detailBox}>
-                <Text style={newStyle.text}>User</Text>
+                <Text style={newStyle.text}>{personisit ? personData[0].name : "Name"}</Text>
                 <Text style={newStyle.subtext}>Wallet Address : </Text>
                 <Text style={newStyle.subtext}>
                   BZBT4C6UsEeow9ebLRymhtTtZj9sYDw3WkwZHHbFg2YY
@@ -458,7 +473,7 @@ export default function Ting() {
                     return (
                       <>
                         <Marker
-                          onPress={openBottomSheet}
+                          onPress={()=> ching(item.Lat , item.Lat)}
                           draggable
                           coordinate={{
                             latitude: item.Lat,
@@ -481,7 +496,7 @@ export default function Ting() {
                     return (
                       <>
                         <Marker
-                          onPress={openBottomSheet}
+                          onPress={()=> ching(item.Lat , item.Lat)}
                           draggable
                           coordinate={{
                             latitude: item.Lat,
