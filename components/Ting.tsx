@@ -21,7 +21,9 @@ import DisconnectButton from './DisconnectButton';
 import Geoloaction from 'react-native-geolocation-service';
 
 export default function Ting() {
-  const [shyft , setShyft] = useState([])
+  const [shyft, setShyft] = useState([]);
+  const [personData , setPersonData] = useState([])
+  const [eventData , setEventData] = useState([])
   useEffect(() => {
     requestCameraPermission();
   }, []);
@@ -63,6 +65,9 @@ export default function Ting() {
   };
 
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
+  const [openBottomSheetmarker, setBottomSheetMarker] = useState(false);
+  const [isit , setisit] = useState(false)
+
   const [users, setusers] = useState([]);
 
   const openBottomSheet = () => {
@@ -71,6 +76,14 @@ export default function Ting() {
 
   const closeBottomSheet = () => {
     setBottomSheetVisible(false);
+  };
+
+  const openBottomSheetMarker = () => {
+    setBottomSheetMarker(true);
+  };
+
+  const closeBottomSheetMarker = () => {
+    setBottomSheetMarker(false);
   };
 
   const getData = () => {
@@ -86,24 +99,51 @@ export default function Ting() {
         setusers(array);
         console.log(users);
       });
+     
   };
 
   const allAllNFTs = () => {
     var myHeaders = new Headers();
     myHeaders.append('x-api-key', 'HI_eHFd0SX8ykSDW');
 
-    var requestOptions : any = {
+    var requestOptions: any = {
       method: 'GET',
       headers: myHeaders,
       redirect: 'follow',
     };
 
-    fetch("https://api.shyft.to/sol/v1/nft/read_all?network=mainnet-beta&address=44n5CYX18L6p4VxVECE9ZNYrAGB9GKD477b78kPNq5Su", requestOptions)
+    fetch(
+      'https://api.shyft.to/sol/v1/nft/read_all?network=mainnet-beta&address=44n5CYX18L6p4VxVECE9ZNYrAGB9GKD477b78kPNq5Su',
+      requestOptions,
+    )
       .then(response => response.json())
       .then(result => setShyft(result.result))
       .catch(error => console.log('error', error));
 
-      console.log(shyft)
+    console.log(shyft);
+  };
+
+  const getDataForBottomSheet = (Lat: number, Lng: number) => {
+    setisit(false)
+    const array :any[] = []
+    firestore()
+      .collection('Users')
+      .where('Lat', '==', Lat)
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(documentSnapshot => {
+          if (documentSnapshot.exists) {
+            //console.log(documentSnapshot.data());
+            array.push(documentSnapshot.data())
+          } else {
+            console.log('Data not found');
+          }
+        });
+        setEventData(array)
+        console.log(eventData)
+        setisit(true)
+      });
+      openBottomSheetMarker()
   };
 
   return (
@@ -154,6 +194,78 @@ export default function Ting() {
               </ScrollView>
             </ScrollView>
             <TouchableOpacity onPress={closeBottomSheet}>
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 15,
+                  height: 45,
+                }}>
+                <Text style={{color: 'black', fontSize: 18}}>Close</Text>
+              </View>
+            </TouchableOpacity>
+          </BottomSheet>
+        </View>
+
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <BottomSheet
+            visible={openBottomSheetmarker}
+            onClose={closeBottomSheetMarker}>
+            <ScrollView nestedScrollEnabled={true}>
+              <View style={newStyle.mainapp}>
+                {isit ? (
+                  <>
+                  <Image
+                  source={{
+                    uri: eventData[0].img,
+                  }}
+                  style={newStyle.logoPointer}
+                />
+                  </>
+                ):(
+                  <>
+                  <Image
+                  source={{
+                    uri: 'https://picsum.photos/200',
+                  }}
+                  style={newStyle.logoPointer}
+                />
+                  </>
+                )}
+                
+              </View>
+
+              <View style={newStyle.detailBox}>
+                <Text style={newStyle.text}>
+                  {isit ? eventData[0].name : "TestEent"}
+                </Text>
+                <Text style={newStyle.subtext}>
+                  {isit? eventData[0].desc : "Event Description"}
+                </Text>
+
+                <Text style={newStyle.subtext}>Time : {isit?eventData[0].time : "1500:1900"}</Text>
+                <TouchableOpacity onPress={closeBottomSheetMarker}>
+                  <View
+                    style={{
+                      backgroundColor: 'white',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: 15,
+                      height: 45,
+                      marginLeft: 16,
+                      marginRight: 16,
+                      marginTop: 20,
+                      marginBottom: 20,
+                    }}>
+                    <Text style={{color: 'black', fontSize: 18}}>
+                      Book Ticket
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+            <TouchableOpacity onPress={closeBottomSheetMarker}>
               <View
                 style={{
                   backgroundColor: 'white',
@@ -318,32 +430,61 @@ export default function Ting() {
               }}
               customMapStyle={mapStyle}>
               {users.map((item, key) => {
-                if (item.gender == 'male') {
-                  return (
-                    <>
-                      <Marker
-                        draggable
-                        coordinate={{
-                          latitude: item.Lat,
-                          longitude: item.Lng,
-                        }}
-                        onDragEnd={e =>
-                          alert(JSON.stringify(e.nativeEvent.coordinate))
-                        }
-                        title={'Test Marker'}
-                        description={'This is a description of the marker'}>
-                        <Image
-                          source={require('../img/man.png')}
-                          style={styles.markerlogoim}
-                        />
-                      </Marker>
-                    </>
-                  );
+                if (item.type == 'people') {
+                  if (item.gender == 'male') {
+                    return (
+                      <>
+                        <Marker
+                          onPress={openBottomSheet}
+                          draggable
+                          coordinate={{
+                            latitude: item.Lat,
+                            longitude: item.Lng,
+                          }}
+                          onDragEnd={e =>
+                            alert(JSON.stringify(e.nativeEvent.coordinate))
+                          }
+                          title={'Test Marker'}
+                          description={'This is a description of the marker'}>
+                          <Image
+                            source={require('../img/man.png')}
+                            style={styles.markerlogoim}
+                          />
+                        </Marker>
+                      </>
+                    );
+                  }
+                  if (item.gender == 'female') {
+                    return (
+                      <>
+                        <Marker
+                          onPress={openBottomSheet}
+                          draggable
+                          coordinate={{
+                            latitude: item.Lat,
+                            longitude: item.Lng,
+                          }}
+                          onDragEnd={e =>
+                            alert(JSON.stringify(e.nativeEvent.coordinate))
+                          }
+                          title={'Test Marker'}
+                          description={'This is a description of the marker'}>
+                          <Image
+                            source={require('../img/wooman.png')}
+                            style={styles.markerlogoim}
+                          />
+                        </Marker>
+                      </>
+                    );
+                  }
                 }
-                if (item.gender == 'female') {
+                if (item.type == 'event') {
                   return (
                     <>
                       <Marker
+                        onPress={() =>
+                          getDataForBottomSheet(item.Lat, item.Lat)
+                        }
                         draggable
                         coordinate={{
                           latitude: item.Lat,
@@ -355,7 +496,7 @@ export default function Ting() {
                         title={'Test Marker'}
                         description={'This is a description of the marker'}>
                         <Image
-                          source={require('../img/wooman.png')}
+                          source={require('../img/placard.png')}
                           style={styles.markerlogoim}
                         />
                       </Marker>
@@ -605,8 +746,14 @@ const newStyle = StyleSheet.create({
     borderRadius: 10,
     margin: 5,
   },
+  logoPointer: {
+    justifyContent: 'center',
+    height: 200,
+    borderRadius: 10,
+    margin: 5,
+  },
   detailBox: {
-    height: 220,
+    height: 250,
     backgroundColor: '#343434',
     marginTop: 20,
     marginLeft: 10,
@@ -623,7 +770,7 @@ const newStyle = StyleSheet.create({
   },
   subtext: {
     color: 'white',
-    marginLeft: 30,
+    marginLeft: 15,
     marginTop: 10,
     fontSize: 18,
   },
@@ -640,7 +787,7 @@ const liststyles = StyleSheet.create({
     padding: 10,
     fontSize: 18,
     height: 44,
-    alignItems : "center"
+    alignItems: 'center',
   },
 });
 
