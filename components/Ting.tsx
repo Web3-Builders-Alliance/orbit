@@ -31,7 +31,7 @@ export default function Ting() {
   const [isit, setisit] = useState(false);
   const [personisit, setPeronisit] = useState(false);
   const [users, setusers] = useState([]);
-  const [encoded_transaction, setEncodeTranaction] : any = useState([]);
+  const [encoded_transaction, setEncodeTranaction]: any = useState([]);
 
   useEffect(() => {
     requestCameraPermission();
@@ -221,15 +221,18 @@ export default function Ting() {
       .then(result => setEncodeTranaction(result))
       .catch(error => console.log('error', error));
 
-      console.log(encoded_transaction.result.encoded_transaction)
-      console.log(encoded_transaction.result.tree)
+    console.log(encoded_transaction.result.encoded_transaction);
+    console.log(encoded_transaction.result.tree);
 
     setTimeout(() => {
       signTransaction(
         encoded_transaction.result.encoded_transaction,
         'tmiFaNmqR5p5bnjP2kcCndexdUWQaRGPonGNptvEGX5UYMVo4nEGq1xEY5h2K1T89tXgASQGaJw4a5auaYjkBQs',
       );
-    }),[500];
+    },500)
+
+   
+    
 
     // var myHeaders = new Headers();
     // myHeaders.append('Content-Type', 'application/json');
@@ -257,8 +260,6 @@ export default function Ting() {
     //   .then(result => console.log(result))
     //   .catch(error => console.log('error', error));
   };
-
-  
 
   return (
     <>
