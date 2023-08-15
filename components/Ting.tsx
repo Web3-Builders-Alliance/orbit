@@ -186,6 +186,32 @@ export default function Ting() {
         recoveredTransaction.serialize(),
       );
       console.log(txnSignature);
+      console.log("DONe")
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const signTransactionv2 = async (
+    encodedTransaction: string,
+    fromPrivateKey: string,
+    mint: string,
+  ) => {
+    try {
+      const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
+      const feePayer = Keypair.fromSecretKey(bs58.decode(fromPrivateKey));
+      const recoveredTransaction = Transaction.from(
+        Buffer.from(encodedTransaction, 'base64'),
+      );
+      recoveredTransaction.partialSign(feePayer);
+      const txnSignature = await connection.sendRawTransaction(
+        recoveredTransaction.serialize(),
+      );
+      console.log(txnSignature);
+      console.log(`Mint : ${mint}`);
+      setTimeout(()=>{
+        transferCNFT(mint)
+      },1500)
     } catch (error) {
       console.log(error);
     }
@@ -227,12 +253,12 @@ export default function Ting() {
     setTimeout(() => {
       signTransaction(
         encoded_transaction.result.encoded_transaction,
-        '',
+        '/',
       );
     }, 500);
     setTimeout(() => {
       finalCFTMint();
-    },1000);
+    }, 1000);
   };
 
   const finalCFTMint = () => {
@@ -259,11 +285,40 @@ export default function Ting() {
 
     fetch('https://api.shyft.to/sol/v1/nft/compressed/mint', requestOptions)
       .then(response => response.json())
-      .then(result  => signTransaction(result.result.encoded_transaction , ""))
+      .then(result =>
+        signTransactionv2(
+          result.result.encoded_transaction,
+          '/',
+          result.result.mint,
+        ),
+      )
       .catch(error => console.log('error', error));
   };
 
+  const transferCNFT = (mintAddress : string) => {
+    var myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    myHeaders.append('x-api-key', 'HI_eHFd0SX8ykSDW');
 
+    var raw = JSON.stringify({
+      network: 'devnet',
+      nft_address: mintAddress,
+      sender: '2JSg1MdNqRg9z4RP7yiE2NV86fux2BNtF3pSDjhoi767',
+      receiver: '44n5CYX18L6p4VxVECE9ZNYrAGB9GKD477b78kPNq5Su',
+    });
+
+    var requestOptions : any = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow',
+    };
+
+    fetch('https://api.shyft.to/sol/v1/nft/compressed/transfer', requestOptions)
+      .then(response => response.json())
+      .then(result => signTransaction(result.result.encoded_transaction,"/"))
+      .catch(error => console.log('error', error));
+  };
 
   return (
     <>
