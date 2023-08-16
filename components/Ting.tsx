@@ -10,6 +10,7 @@ import {
   ScrollView,
   FlatList,
   PermissionsAndroid,
+  TextInput,
 } from 'react-native';
 import {
   clusterApiUrl,
@@ -18,7 +19,7 @@ import {
   Connection,
   Commitment,
 } from '@solana/web3.js';
-import wallet from '../wallet/wallet'
+import wallet from '../wallet/wallet';
 import {BsFillPersonFill} from 'react-icons/bs';
 import {Dimensions} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
@@ -35,11 +36,23 @@ export default function Ting() {
   const [eventData, setEventData] = useState([]);
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
   const [openBottomSheetmarker, setBottomSheetMarker] = useState(false);
+  const [openMomentoBottomSheet, setOpenMomentoBottomSheet] = useState(false);
   const [isit, setisit] = useState(false);
   const [personisit, setPeronisit] = useState(false);
   const [users, setusers] = useState([]);
-  const [encoded_transaction, setEncodeTranaction]: any = useState([]);
-  const commitment: Commitment = 'confirmed';
+  const [Lat, setLat] = useState('');
+  const [Lng, setLng] = useState('');
+
+  const [momentoName, setMomentoName] = useState('');
+  const [momentoDesc, setMomentoDesc] = useState('');
+
+  const momentoNameHadler = (e: any) => {
+    setMomentoName(e.target.value);
+  };
+
+  const momentoDescHandler = (e: any) => {
+    setMomentoDesc(e.target.value);
+  };
 
   useEffect(() => {
     requestCameraPermission();
@@ -95,6 +108,14 @@ export default function Ting() {
 
   const closeBottomSheetMarker = () => {
     setBottomSheetMarker(false);
+  };
+
+  const OpenMomentoBottomSheet = () => {
+    setOpenMomentoBottomSheet(true);
+  };
+
+  const CLoseMomentoBottomSheet = () => {
+    setOpenMomentoBottomSheet(false);
   };
 
   const getData = () => {
@@ -198,12 +219,12 @@ export default function Ting() {
       console.log('Tree from 1-' + tree);
       setTimeout(() => {
         finalCFTMint(tree);
-      },500);
+      }, 500);
     } catch (error) {
       console.log(error);
     }
   };
-  
+
   const signTransactionv3 = async (
     encodedTransaction: string,
     fromPrivateKey: string,
@@ -223,7 +244,6 @@ export default function Ting() {
       console.log(error);
     }
   };
-
 
   const signTransactionv2 = async (
     encodedTransaction: string,
@@ -344,17 +364,31 @@ export default function Ting() {
     fetch('https://api.shyft.to/sol/v1/nft/compressed/transfer', requestOptions)
       .then(response => response.json())
       .then(result =>
-        signTransactionv3(
-          result.result.encoded_transaction,
-          wallet,
-        ),
+        signTransactionv3(result.result.encoded_transaction, wallet),
       )
       .catch(error => console.log('error', error));
+  };
+
+  const addMomento = (mint: string) => {
+    firestore()
+      .collection('Users')
+      .add({
+        Lat: Lat,
+        Lng: Lng,
+        mint: mint,
+        name: 'Sample Event',
+        desc: 'Sample Desc',
+        type: 'momento',
+      })
+      .then(() => {
+        console.log('Added');
+      });
   };
 
   return (
     <>
       <SafeAreaView>
+        {/* Bottom sheet for person  */}
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           {/* <Button title="Open Bottom Sheet" onPress={openBottomSheet} /> */}
           <BottomSheet visible={bottomSheetVisible} onClose={closeBottomSheet}>
@@ -429,6 +463,7 @@ export default function Ting() {
           </BottomSheet>
         </View>
 
+        {/* Bottom Sheet for marker */}
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <BottomSheet
             visible={openBottomSheetmarker}
@@ -488,6 +523,75 @@ export default function Ting() {
               </View>
             </ScrollView>
             <TouchableOpacity onPress={closeBottomSheetMarker}>
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 15,
+                  height: 45,
+                }}>
+                <Text style={{color: 'black', fontSize: 18}}>Close</Text>
+              </View>
+            </TouchableOpacity>
+          </BottomSheet>
+        </View>
+
+        {/* Bottom sheet for momento */}
+
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <BottomSheet
+            visible={openMomentoBottomSheet}
+            onClose={CLoseMomentoBottomSheet}>
+            <ScrollView nestedScrollEnabled={true}>
+              <View style={newStyle.mainapp}>
+                <>
+                  <View style={styles.header}>
+                    <Text style={styles.text}>Momento</Text>
+                  </View>
+                  <View style={styles.header}>
+                  <Image
+                    source={{
+                      uri: 'https://picsum.photos/200',
+                    }}
+                    style={newStyle.logoPointer}
+                  />
+                  </View>
+                </>
+              </View>
+              <View style={inputForm.container}>
+                <Text style={inputForm.label}>Your Momento Name</Text>
+                <TextInput
+                  style={inputForm.input}
+                  value={momentoName}
+                  onChangeText={momentoNameHadler}
+                  placeholder="Your Momento Name"
+                />
+                <Text style={inputForm.label}>Your Momento Description</Text>
+                <TextInput
+                  style={inputForm.input}
+                  value={momentoDesc}
+                  onChangeText={momentoDescHandler}
+                  placeholder="Momento Description"
+                  keyboardType="email-address"
+                />
+                <TouchableOpacity onPress={closeBottomSheetMarker}>
+                  <View
+                    style={{
+                      backgroundColor: 'white',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: 15,
+                      height: 45,
+                    }}>
+                    <Text style={{color: 'black', fontSize: 18}}>
+                      Mint CFT as Momento
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+            <TouchableOpacity onPress={CLoseMomentoBottomSheet}>
               <View
                 style={{
                   backgroundColor: 'white',
@@ -749,7 +853,7 @@ export default function Ting() {
             <View style={bottomstyles.buttonContainer}>
               <TouchableOpacity
                 onPress={() => {
-                  mintCNFT();
+                  OpenMomentoBottomSheet();
                 }}>
                 <View
                   style={{
@@ -1010,6 +1114,25 @@ const liststyles = StyleSheet.create({
     fontSize: 18,
     height: 44,
     alignItems: 'center',
+  },
+});
+
+const inputForm = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    justifyContent: 'center',
+  },
+  label: {
+    fontSize: 18,
+    marginBottom: 5,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 20,
   },
 });
 
