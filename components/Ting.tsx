@@ -11,7 +11,14 @@ import {
   FlatList,
   PermissionsAndroid,
 } from 'react-native';
-import {clusterApiUrl, Keypair, Transaction, Connection} from '@solana/web3.js';
+import {
+  clusterApiUrl,
+  Keypair,
+  Transaction,
+  Connection,
+  Commitment,
+} from '@solana/web3.js';
+import wallet from '../wallet/wallet'
 import {BsFillPersonFill} from 'react-icons/bs';
 import {Dimensions} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
@@ -32,6 +39,7 @@ export default function Ting() {
   const [personisit, setPeronisit] = useState(false);
   const [users, setusers] = useState([]);
   const [encoded_transaction, setEncodeTranaction]: any = useState([]);
+  const commitment: Commitment = 'confirmed';
 
   useEffect(() => {
     requestCameraPermission();
@@ -174,6 +182,31 @@ export default function Ting() {
   const signTransaction = async (
     encodedTransaction: string,
     fromPrivateKey: string,
+    tree: string,
+  ) => {
+    try {
+      const connection = new Connection(clusterApiUrl('devnet'), 'finalized');
+      const feePayer = Keypair.fromSecretKey(bs58.decode(fromPrivateKey));
+      const recoveredTransaction = Transaction.from(
+        Buffer.from(encodedTransaction, 'base64'),
+      );
+      recoveredTransaction.partialSign(feePayer);
+      const txnSignature = await connection.sendRawTransaction(
+        recoveredTransaction.serialize(),
+      );
+      console.log('txSig from 1-' + txnSignature);
+      console.log('Tree from 1-' + tree);
+      setTimeout(() => {
+        finalCFTMint(tree);
+      },500);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
+  const signTransactionv3 = async (
+    encodedTransaction: string,
+    fromPrivateKey: string,
   ) => {
     try {
       const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
@@ -185,12 +218,12 @@ export default function Ting() {
       const txnSignature = await connection.sendRawTransaction(
         recoveredTransaction.serialize(),
       );
-      console.log(txnSignature);
-      console.log("DONe")
+      console.log('txSig from v3-' + txnSignature);
     } catch (error) {
       console.log(error);
     }
   };
+
 
   const signTransactionv2 = async (
     encodedTransaction: string,
@@ -207,13 +240,13 @@ export default function Ting() {
       const txnSignature = await connection.sendRawTransaction(
         recoveredTransaction.serialize(),
       );
-      console.log(txnSignature);
-      console.log(`Mint : ${mint}`);
-      setTimeout(()=>{
-        transferCNFT(mint)
-      },1500)
+      console.log('tx hash from v2-' + txnSignature);
+      console.log(`Mint v2 - ${mint}`);
+      setTimeout(() => {
+        transferCNFT(mint);
+      }, 500);
     } catch (error) {
-      console.log(error);
+      console.log('error from v2' + error);
     }
   };
 
@@ -244,24 +277,17 @@ export default function Ting() {
       requestOptions,
     )
       .then(response => response.json())
-      .then(result => setEncodeTranaction(result))
+      .then(result =>
+        signTransaction(
+          result.result.encoded_transaction,
+          wallet,
+          result.result.tree,
+        ),
+      )
       .catch(error => console.log('error', error));
-
-    console.log(encoded_transaction.result.encoded_transaction);
-    console.log(encoded_transaction.result.tree);
-
-    setTimeout(() => {
-      signTransaction(
-        encoded_transaction.result.encoded_transaction,
-        '/',
-      );
-    }, 500);
-    setTimeout(() => {
-      finalCFTMint();
-    }, 1000);
   };
 
-  const finalCFTMint = () => {
+  const finalCFTMint = (tree: string) => {
     var myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     myHeaders.append('x-api-key', 'HI_eHFd0SX8ykSDW');
@@ -271,7 +297,7 @@ export default function Ting() {
       creator_wallet: '2JSg1MdNqRg9z4RP7yiE2NV86fux2BNtF3pSDjhoi767',
       metadata_uri:
         'https://gateway.pinata.cloud/ipfs/QmYmUb5MHZwYovnQg9qANTJUi7R8VaE5CetfssczaSWn5K',
-      merkle_tree: encoded_transaction.result.tree,
+      merkle_tree: tree,
       max_supply: 1,
       is_mutable: true,
     });
@@ -286,16 +312,17 @@ export default function Ting() {
     fetch('https://api.shyft.to/sol/v1/nft/compressed/mint', requestOptions)
       .then(response => response.json())
       .then(result =>
+        // console.log("tx hash from final"+ result.result.encoded_transaction)
         signTransactionv2(
           result.result.encoded_transaction,
-          '/',
+          wallet,
           result.result.mint,
         ),
       )
-      .catch(error => console.log('error', error));
+      .catch(error => console.log('error from final', error));
   };
 
-  const transferCNFT = (mintAddress : string) => {
+  const transferCNFT = (mintAddress: string) => {
     var myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     myHeaders.append('x-api-key', 'HI_eHFd0SX8ykSDW');
@@ -307,7 +334,7 @@ export default function Ting() {
       receiver: '44n5CYX18L6p4VxVECE9ZNYrAGB9GKD477b78kPNq5Su',
     });
 
-    var requestOptions : any = {
+    var requestOptions: any = {
       method: 'POST',
       headers: myHeaders,
       body: raw,
@@ -316,7 +343,12 @@ export default function Ting() {
 
     fetch('https://api.shyft.to/sol/v1/nft/compressed/transfer', requestOptions)
       .then(response => response.json())
-      .then(result => signTransaction(result.result.encoded_transaction,"/"))
+      .then(result =>
+        signTransactionv3(
+          result.result.encoded_transaction,
+          wallet,
+        ),
+      )
       .catch(error => console.log('error', error));
   };
 

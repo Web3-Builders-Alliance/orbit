@@ -63,3 +63,5 @@ yarn-error.log
 .metro-health-check*
 
 /android/app/google-services.json
+
+/wallet
