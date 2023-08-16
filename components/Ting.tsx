@@ -37,6 +37,7 @@ export default function Ting() {
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
   const [openBottomSheetmarker, setBottomSheetMarker] = useState(false);
   const [openMomentoBottomSheet, setOpenMomentoBottomSheet] = useState(false);
+  const [openSocialBottomSheet, setOpenSocialBottomSheet] = useState(false);
   const [isit, setisit] = useState(false);
   const [personisit, setPeronisit] = useState(false);
   const [users, setusers] = useState([]);
@@ -45,16 +46,27 @@ export default function Ting() {
 
   const [momentoName, setMomentoName] = useState('');
   const [momentoDesc, setMomentoDesc] = useState('');
+  const [socialName, setSocialName] = useState('');
+  const [socialDesc, setSocialDesc] = useState('');
 
   const momentoNameHadler = (e: any) => {
-    setMomentoName(e.target.value);
+    setMomentoName(e);
   };
 
   const momentoDescHandler = (e: any) => {
-    setMomentoDesc(e.target.value);
+    setMomentoDesc(e);
+  };
+
+  const socialNameHandler = (e: any) => {
+    setSocialName(e);
+  };
+
+  const socialDescHandler = (e: any) => {
+    setSocialDesc(e);
   };
 
   useEffect(() => {
+    //getData()
     requestCameraPermission();
   }, []);
 
@@ -116,6 +128,14 @@ export default function Ting() {
 
   const CLoseMomentoBottomSheet = () => {
     setOpenMomentoBottomSheet(false);
+  };
+
+  const OpenSocialBottomSheet = () => {
+    setOpenSocialBottomSheet(true);
+  };
+
+  const CloseSocailBottomSheet = () => {
+    setOpenSocialBottomSheet(false);
   };
 
   const getData = () => {
@@ -265,6 +285,9 @@ export default function Ting() {
       setTimeout(() => {
         transferCNFT(mint);
       }, 500);
+      setTimeout(() => {
+        addMomento(mint);
+      }, 700);
     } catch (error) {
       console.log('error from v2' + error);
     }
@@ -373,16 +396,39 @@ export default function Ting() {
     firestore()
       .collection('Users')
       .add({
-        Lat: Lat,
-        Lng: Lng,
+        Lat: Number(Lat),
+        Lng: Number(Lng),
         mint: mint,
-        name: 'Sample Event',
-        desc: 'Sample Desc',
+        name: momentoName,
+        desc: momentoDesc,
         type: 'momento',
+        img: '',
       })
       .then(() => {
-        console.log('Added');
+        console.log('Momento Data Added');
       });
+  };
+
+  const addSocial = (mint: string) => {
+    firestore()
+      .collection('Users')
+      .add({
+        Lat: Number(Lat),
+        Lng: Number(Lng),
+        mint: mint,
+        name: socialName,
+        desc: socialDesc,
+        type: 'social',
+        img: '',
+      })
+      .then(() => {
+        console.log('Social Data Added');
+      });
+  };
+
+  const setLatLngforMomento = (Lat: string, Lng: string) => {
+    setLat(Lat);
+    setLng(Lng);
   };
 
   return (
@@ -546,18 +592,57 @@ export default function Ting() {
             <ScrollView nestedScrollEnabled={true}>
               <View style={newStyle.mainapp}>
                 <>
-                  <View style={styles.header}>
+                  <View style={styles.headerForMomentoBottom}>
                     <Text style={styles.text}>Momento</Text>
                   </View>
                   <View style={styles.header}>
-                  <Image
-                    source={{
-                      uri: 'https://picsum.photos/200',
-                    }}
-                    style={newStyle.logoPointer}
-                  />
+                    <Text style={styles.text}>Select Image</Text>
+                  </View>
+                  <View style={styles.header}>
+                    <Image
+                      source={require('../img/add-images.png')}
+                      style={newStyle.logoPointerForMomento}
+                    />
                   </View>
                 </>
+              </View>
+              <View style={newStyle.mainapp}>
+                <View style={styles.header}>
+                  <Text style={styles.text}>Location</Text>
+                </View>
+              </View>
+              <View style={styles.mapcontainerForMomento}>
+                <MapView
+                  zoomEnabled={true}
+                  showsUserLocation={true}
+                  followsUserLocation={true}
+                  style={styles.mapStyle}
+                  initialRegion={{
+                    latitude: 28.56116880061382,
+                    longitude: 77.29191947094775,
+                    latitudeDelta: 0.00922,
+                    longitudeDelta: 0.00421,
+                  }}
+                  customMapStyle={mapStyle}>
+                  <Marker
+                    draggable
+                    coordinate={{
+                      latitude: 28.56116880061382,
+                      longitude: 77.29191947094775,
+                    }}
+                    onDragEnd={
+                      e =>
+                        setLatLngforMomento(
+                          JSON.stringify(e.nativeEvent.coordinate.latitude),
+                          JSON.stringify(e.nativeEvent.coordinate.longitude),
+                        )
+                      // alert(JSON.stringify(e.nativeEvent.coordinate))
+                    }
+                    title={'Test Marker'}
+                    description={
+                      'This is a description of the marker'
+                    }></Marker>
+                </MapView>
               </View>
               <View style={inputForm.container}>
                 <Text style={inputForm.label}>Your Momento Name</Text>
@@ -575,7 +660,7 @@ export default function Ting() {
                   placeholder="Momento Description"
                   keyboardType="email-address"
                 />
-                <TouchableOpacity onPress={closeBottomSheetMarker}>
+                <TouchableOpacity onPress={() => addMomento('ff')}>
                   <View
                     style={{
                       backgroundColor: 'white',
@@ -592,6 +677,113 @@ export default function Ting() {
               </View>
             </ScrollView>
             <TouchableOpacity onPress={CLoseMomentoBottomSheet}>
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 15,
+                  height: 45,
+                }}>
+                <Text style={{color: 'black', fontSize: 18}}>Close</Text>
+              </View>
+            </TouchableOpacity>
+          </BottomSheet>
+        </View>
+
+        {/* Bottom Sheet for Society */}
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <BottomSheet
+            visible={openSocialBottomSheet}
+            onClose={CloseSocailBottomSheet}>
+            <ScrollView nestedScrollEnabled={true}>
+              <View style={newStyle.mainapp}>
+                <>
+                  <View style={styles.headerForMomentoBottom}>
+                    <Text style={styles.text}>Social</Text>
+                  </View>
+                  <View style={styles.header}>
+                    <Text style={styles.text}>Select Image</Text>
+                  </View>
+                  <View style={styles.header}>
+                    <Image
+                      source={require('../img/add-images.png')}
+                      style={newStyle.logoPointerForMomento}
+                    />
+                  </View>
+                </>
+              </View>
+              <View style={newStyle.mainapp}>
+                <View style={styles.header}>
+                  <Text style={styles.text}>Location</Text>
+                </View>
+              </View>
+              <View style={styles.mapcontainerForMomento}>
+                <MapView
+                  zoomEnabled={true}
+                  showsUserLocation={true}
+                  followsUserLocation={true}
+                  style={styles.mapStyle}
+                  initialRegion={{
+                    latitude: 28.56116880061382,
+                    longitude: 77.29191947094775,
+                    latitudeDelta: 0.00922,
+                    longitudeDelta: 0.00421,
+                  }}
+                  customMapStyle={mapStyle}>
+                  <Marker
+                    draggable
+                    coordinate={{
+                      latitude: 28.56116880061382,
+                      longitude: 77.29191947094775,
+                    }}
+                    onDragEnd={
+                      e =>
+                        setLatLngforMomento(
+                          JSON.stringify(e.nativeEvent.coordinate.latitude),
+                          JSON.stringify(e.nativeEvent.coordinate.longitude),
+                        )
+                      // alert(JSON.stringify(e.nativeEvent.coordinate))
+                    }
+                    title={'Test Marker'}
+                    description={
+                      'This is a description of the marker'
+                    }></Marker>
+                </MapView>
+              </View>
+              <View style={inputForm.container}>
+                <Text style={inputForm.label}>Name</Text>
+                <TextInput
+                  style={inputForm.input}
+                  value={socialName}
+                  onChangeText={socialNameHandler}
+                  placeholder="Your Momento Name"
+                />
+                <Text style={inputForm.label}>Description</Text>
+                <TextInput
+                  style={inputForm.input}
+                  value={socialDesc}
+                  onChangeText={socialDescHandler}
+                  placeholder="Momento Description"
+                  keyboardType="email-address"
+                />
+                <TouchableOpacity onPress={() => addSocial('ff')}>
+                  <View
+                    style={{
+                      backgroundColor: 'white',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: 15,
+                      height: 45,
+                    }}>
+                    <Text style={{color: 'black', fontSize: 18}}>
+                      Mint CFT to Warn People
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+            <TouchableOpacity onPress={CloseSocailBottomSheet}>
               <View
                 style={{
                   backgroundColor: 'white',
@@ -817,12 +1009,68 @@ export default function Ting() {
                           longitude: item.Lng,
                         }}
                         onDragEnd={e =>
-                          alert(JSON.stringify(e.nativeEvent.coordinate))
+                          alert(
+                            JSON.stringify(e.nativeEvent.coordinate.longitude),
+                          )
                         }
                         title={'Test Marker'}
                         description={'This is a description of the marker'}>
                         <Image
                           source={require('../img/placard.png')}
+                          style={styles.markerlogoim}
+                        />
+                      </Marker>
+                    </>
+                  );
+                }
+                if (item.type == 'momento') {
+                  return (
+                    <>
+                      <Marker
+                        onPress={() =>
+                          getDataForBottomSheet(item.Lat, item.Lat)
+                        }
+                        draggable
+                        coordinate={{
+                          latitude: item.Lat,
+                          longitude: item.Lng,
+                        }}
+                        onDragEnd={e =>
+                          alert(
+                            JSON.stringify(e.nativeEvent.coordinate.longitude),
+                          )
+                        }
+                        title={'Test Marker'}
+                        description={'This is a description of the marker'}>
+                        <Image
+                          source={require('../img/landmark.png')}
+                          style={styles.markerlogoim}
+                        />
+                      </Marker>
+                    </>
+                  );
+                }
+                if (item.type == 'social') {
+                  return (
+                    <>
+                      <Marker
+                        onPress={() =>
+                          getDataForBottomSheet(item.Lat, item.Lat)
+                        }
+                        draggable
+                        coordinate={{
+                          latitude: item.Lat,
+                          longitude: item.Lng,
+                        }}
+                        onDragEnd={e =>
+                          alert(
+                            JSON.stringify(e.nativeEvent.coordinate.longitude),
+                          )
+                        }
+                        title={'Test Marker'}
+                        description={'This is a description of the marker'}>
+                        <Image
+                          source={require('../img/warning.png')}
                           style={styles.markerlogoim}
                         />
                       </Marker>
@@ -865,7 +1113,7 @@ export default function Ting() {
                   }}>
                   <Text
                     style={{color: 'black', fontSize: 16, fontWeight: 'bold'}}>
-                    Find Events
+                    Momento
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -874,7 +1122,7 @@ export default function Ting() {
 
           <View style={bottomstyles.container}>
             <View style={bottomstyles.buttonContainer}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={OpenSocialBottomSheet}>
                 <View
                   style={{
                     backgroundColor: 'white',
@@ -885,7 +1133,7 @@ export default function Ting() {
                   }}>
                   <Text
                     style={{color: 'black', fontSize: 16, fontWeight: 'bold'}}>
-                    Host Event
+                    Social
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -988,6 +1236,11 @@ const styles = StyleSheet.create({
   header: {
     paddingTop: 15,
   },
+  headerForMomentoBottom: {
+    paddingTop: 5,
+    textAlign: 'center',
+    alignItems: 'center',
+  },
   discoverHeading: {
     padding: 1,
     marginTop: 20,
@@ -1059,6 +1312,14 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     overflow: 'hidden',
   },
+  mapcontainerForMomento: {
+    height: 200,
+    marginTop: 20,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    borderRadius: 50,
+    overflow: 'hidden',
+  },
 });
 
 const newStyle = StyleSheet.create({
@@ -1075,6 +1336,15 @@ const newStyle = StyleSheet.create({
   logoPointer: {
     justifyContent: 'center',
     height: 200,
+    borderRadius: 10,
+    margin: 5,
+  },
+  logoPointerForMomento: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 100,
+    width: 150,
+    height: 150,
     borderRadius: 10,
     margin: 5,
   },
