@@ -38,11 +38,18 @@ export default function Ting() {
   const [openBottomSheetmarker, setBottomSheetMarker] = useState(false);
   const [openMomentoBottomSheet, setOpenMomentoBottomSheet] = useState(false);
   const [openSocialBottomSheet, setOpenSocialBottomSheet] = useState(false);
+  const [openHostBottomSheet, setopenHostBottomSheet] = useState(false);
   const [isit, setisit] = useState(false);
   const [personisit, setPeronisit] = useState(false);
   const [users, setusers] = useState([]);
   const [Lat, setLat] = useState('');
   const [Lng, setLng] = useState('');
+  const [mint, setMint] = useState('');
+  const [transfer, setNoTransfer] = useState(true);
+
+  const [eventName, setEventName] = useState('');
+  const [eventDesc, setEventDesc] = useState('');
+  const [time_for_event, setTime_for_event] = useState('');
 
   const [momentoName, setMomentoName] = useState('');
   const [momentoDesc, setMomentoDesc] = useState('');
@@ -65,8 +72,20 @@ export default function Ting() {
     setSocialDesc(e);
   };
 
+  const eventNameHandler = (e: any) => {
+    setEventName(e);
+  };
+
+  const eventDescHandler = (e: any) => {
+    setEventDesc(e);
+  };
+
+  const timeHandlerForTime = (e: any) => {
+    setTime_for_event(e);
+  };
+
   useEffect(() => {
-    //getData()
+    getData()
     requestCameraPermission();
   }, []);
 
@@ -136,6 +155,14 @@ export default function Ting() {
 
   const CloseSocailBottomSheet = () => {
     setOpenSocialBottomSheet(false);
+  };
+
+  const OpenHostBottomSheet = () => {
+    setopenHostBottomSheet(true);
+  };
+
+  const CloseHostBOttomSheet = () => {
+    setopenHostBottomSheet(false);
   };
 
   const getData = () => {
@@ -282,11 +309,13 @@ export default function Ting() {
       );
       console.log('tx hash from v2-' + txnSignature);
       console.log(`Mint v2 - ${mint}`);
+      if (!transfer) {
+        setTimeout(() => {
+          transferCNFT(mint);
+        }, 500);
+      }
       setTimeout(() => {
-        transferCNFT(mint);
-      }, 500);
-      setTimeout(() => {
-        addMomento(mint);
+        addEvent(mint);
       }, 700);
     } catch (error) {
       console.log('error from v2' + error);
@@ -425,6 +454,26 @@ export default function Ting() {
         console.log('Social Data Added');
       });
   };
+
+  const addEvent = (mint: string) => {
+    firestore()
+      .collection('Users')
+      .add({
+        Lat: Number(Lat),
+        Lng: Number(Lng),
+        mint: mint,
+        name: eventName,
+        desc: eventDesc,
+        time: time_for_event,
+        type: 'event',
+        img: '',
+      })
+      .then(() => {
+        console.log('Event Data Added');
+      });
+  };
+
+  const publishEvent = () => {}
 
   const setLatLngforMomento = (Lat: string, Lng: string) => {
     setLat(Lat);
@@ -596,11 +645,11 @@ export default function Ting() {
                     <Text style={styles.text}>Momento</Text>
                   </View>
                   <View style={styles.header}>
-                    <Text style={styles.text}>Select Image</Text>
+                    <Text style={styles.textForBottomSheet}>Select Image</Text>
                   </View>
                   <View style={styles.header}>
                     <Image
-                      source={require('../img/add-images.png')}
+                      source={require('../img/image.png')}
                       style={newStyle.logoPointerForMomento}
                     />
                   </View>
@@ -608,7 +657,7 @@ export default function Ting() {
               </View>
               <View style={newStyle.mainapp}>
                 <View style={styles.header}>
-                  <Text style={styles.text}>Location</Text>
+                  <Text style={styles.textForBottomSheet}>Location</Text>
                 </View>
               </View>
               <View style={styles.mapcontainerForMomento}>
@@ -703,11 +752,11 @@ export default function Ting() {
                     <Text style={styles.text}>Social</Text>
                   </View>
                   <View style={styles.header}>
-                    <Text style={styles.text}>Select Image</Text>
+                    <Text style={styles.textForBottomSheet}>Select Image</Text>
                   </View>
                   <View style={styles.header}>
                     <Image
-                      source={require('../img/add-images.png')}
+                      source={require('../img/image.png')}
                       style={newStyle.logoPointerForMomento}
                     />
                   </View>
@@ -715,7 +764,7 @@ export default function Ting() {
               </View>
               <View style={newStyle.mainapp}>
                 <View style={styles.header}>
-                  <Text style={styles.text}>Location</Text>
+                  <Text style={styles.textForBottomSheet}>Location</Text>
                 </View>
               </View>
               <View style={styles.mapcontainerForMomento}>
@@ -784,6 +833,117 @@ export default function Ting() {
               </View>
             </ScrollView>
             <TouchableOpacity onPress={CloseSocailBottomSheet}>
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 15,
+                  height: 45,
+                }}>
+                <Text style={{color: 'black', fontSize: 18}}>Close</Text>
+              </View>
+            </TouchableOpacity>
+          </BottomSheet>
+        </View>
+
+        {/* Bottom Sheet for hostEvent */}
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <BottomSheet
+            visible={openHostBottomSheet}
+            onClose={CloseHostBOttomSheet}>
+            <ScrollView nestedScrollEnabled={true}>
+              <View style={newStyle.mainapp}>
+                <>
+                  <View style={styles.headerForMomentoBottom}>
+                    <Text style={styles.text}>Host Event</Text>
+                  </View>
+                  <View style={styles.header}>
+                    <Text style={styles.textForBottomSheet}>Select Event Image</Text>
+                  </View>
+                  <View style={styles.header}>
+                    <Image
+                      source={require('../img/image.png')}
+                      style={newStyle.logoPointerForMomento}
+                    />
+                  </View>
+                </>
+              </View>
+              <View style={newStyle.mainapp}>
+                <View style={styles.header}>
+                  <Text style={styles.textForBottomSheet}>Location</Text>
+                </View>
+              </View>
+              <View style={styles.mapcontainerForMomento}>
+                <MapView
+                  zoomEnabled={true}
+                  showsUserLocation={true}
+                  followsUserLocation={true}
+                  style={styles.mapStyle}
+                  initialRegion={{
+                    latitude: 28.56116880061382,
+                    longitude: 77.29191947094775,
+                    latitudeDelta: 0.00922,
+                    longitudeDelta: 0.00421,
+                  }}
+                  customMapStyle={mapStyle}>
+                  <Marker
+                    draggable
+                    coordinate={{
+                      latitude: 28.56116880061382,
+                      longitude: 77.29191947094775,
+                    }}
+                    onDragEnd={
+                      e =>
+                        setLatLngforMomento(
+                          JSON.stringify(e.nativeEvent.coordinate.latitude),
+                          JSON.stringify(e.nativeEvent.coordinate.longitude),
+                        )
+                      // alert(JSON.stringify(e.nativeEvent.coordinate))
+                    }
+                    title={'Test Marker'}
+                    description={
+                      'This is a description of the marker'
+                    }></Marker>
+                </MapView>
+              </View>
+              <View style={inputForm.container}>
+                <Text style={inputForm.label}>Name</Text>
+                <TextInput
+                  style={inputForm.input}
+                  value={eventName}
+                  onChangeText={eventNameHandler}
+                  placeholder="Event Name"
+                />
+                <Text style={inputForm.label}>Description</Text>
+                <TextInput
+                  style={inputForm.input}
+                  value={eventDesc}
+                  onChangeText={eventDescHandler}
+                  placeholder="Event Description"
+                />
+                <Text style={inputForm.label}>Time</Text>
+                <TextInput
+                  style={inputForm.input}
+                  value={time_for_event}
+                  onChangeText={timeHandlerForTime}
+                  placeholder="Time"
+                />
+                <TouchableOpacity>
+                  <View
+                    style={{
+                      backgroundColor: 'white',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: 15,
+                      height: 45,
+                    }}>
+                    <Text style={{color: 'black', fontSize: 18}}>Done</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+            <TouchableOpacity onPress={CloseHostBOttomSheet}>
               <View
                 style={{
                   backgroundColor: 'white',
@@ -1082,7 +1242,7 @@ export default function Ting() {
           </View>
           <View style={bottomstyles.container}>
             <View style={bottomstyles.buttonContainer}>
-              <TouchableOpacity onPress={getData}>
+              <TouchableOpacity onPress={OpenHostBottomSheet}>
                 <View
                   style={{
                     backgroundColor: 'white',
@@ -1093,7 +1253,7 @@ export default function Ting() {
                   }}>
                   <Text
                     style={{color: 'black', fontSize: 16, fontWeight: 'bold'}}>
-                    Find People
+                    Host Events
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -1258,6 +1418,13 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     color: 'white',
   },
+  textForBottomSheet: {
+    fontWeight: 'bold',
+    lineHeight: 30,
+    fontSize: 20,
+    textAlign: 'left',
+    color: 'white',
+  },
   link: {
     color: '#1B95E0',
   },
@@ -1342,10 +1509,11 @@ const newStyle = StyleSheet.create({
   logoPointerForMomento: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 100,
-    width: 150,
-    height: 150,
-    borderRadius: 10,
+    marginLeft: 138,
+    marginTop:20,
+    width: 70,
+    height: 70,
+    borderRadius: 20,
     margin: 5,
   },
   detailBox: {
