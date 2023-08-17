@@ -53,6 +53,8 @@ export default function Ting() {
   const [loading, setLoading] = useState(false);
   const [transferLoading, settransferLoading] = useState(false);
 
+  const [type, setType] = useState('event');
+
   const [eventName, setEventName] = useState('');
   const [eventDesc, setEventDesc] = useState('');
   const [time_for_event, setTime_for_event] = useState('');
@@ -265,6 +267,8 @@ export default function Ting() {
     encodedTransaction: string,
     fromPrivateKey: string,
     tree: string,
+    type : string,
+    transfer : boolean
   ) => {
     try {
       const connection = new Connection(clusterApiUrl('devnet'), 'finalized');
@@ -279,7 +283,7 @@ export default function Ting() {
       console.log('txSig from 1-' + txnSignature);
       console.log('Tree from 1-' + tree);
       setTimeout(() => {
-        finalCFTMint(tree);
+        finalCFTMint(tree,type,transfer);
       }, 500);
     } catch (error) {
       console.log(error);
@@ -300,6 +304,24 @@ export default function Ting() {
       const txnSignature = await connection.sendRawTransaction(
         recoveredTransaction.serialize(),
       );
+      Alert.alert(
+        'Ticket Recieved',
+        `TxSignature : https://translator.shyft.to/tx/${txnSignature}?cluster=devnet`,
+        [
+          {
+            text: 'Dismiss',
+            onPress: () => console.log('No Pressed'),
+            style: 'cancel',
+          },
+          {
+            text: 'Explorer',
+            onPress: () =>
+              Linking.openURL(
+                `https://translator.shyft.to/tx/${txnSignature}?cluster=devnet`,
+              ),
+          },
+        ],
+      );
       console.log('txSig from v3-' + txnSignature);
       settransferLoading(false);
     } catch (error) {
@@ -311,6 +333,8 @@ export default function Ting() {
     encodedTransaction: string,
     fromPrivateKey: string,
     mint: string,
+    type : string,
+    transfer : boolean
   ) => {
     try {
       const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
@@ -329,9 +353,25 @@ export default function Ting() {
           transferCNFT(mint);
         }, 500);
       }
-      setTimeout(() => {
-        addEvent(mint);
-      }, 700);
+
+      if (type == 'event') {
+        setTimeout(() => {
+          addEvent(mint);
+        }, 700);
+      }
+
+      if (type == 'momento') {
+        setTimeout(() => {
+          addMomento(mint);
+        }, 700);
+      }
+
+      if (type == 'social') {
+        setTimeout(() => {
+          addSocial(mint);
+        }, 700);
+      }
+
       Alert.alert(
         'Evnet Published',
         `TxSignature : https://translator.shyft.to/tx/${txnSignature}?cluster=devnet and your mint is ${mint}`,
@@ -355,7 +395,7 @@ export default function Ting() {
     }
   };
 
-  const mintCNFT = () => {
+  const mintCNFT = (type : string , transfer : boolean) => {
     setLoading(true);
     var myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
@@ -388,12 +428,14 @@ export default function Ting() {
           result.result.encoded_transaction,
           wallet,
           result.result.tree,
+          type,
+          transfer
         ),
       )
       .catch(error => console.log('error', error));
   };
 
-  const finalCFTMint = (tree: string) => {
+  const finalCFTMint = (tree: string , type : string , transfer : boolean) => {
     var myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     myHeaders.append('x-api-key', 'HI_eHFd0SX8ykSDW');
@@ -423,6 +465,8 @@ export default function Ting() {
           result.result.encoded_transaction,
           wallet,
           result.result.mint,
+          type ,
+          transfer
         ),
       )
       .catch(error => console.log('error from final', error));
@@ -470,6 +514,7 @@ export default function Ting() {
       })
       .then(() => {
         console.log('Momento Data Added');
+        setLoading(false)
       });
   };
 
@@ -487,6 +532,7 @@ export default function Ting() {
       })
       .then(() => {
         console.log('Social Data Added');
+        setLoading(false)
       });
   };
 
@@ -514,18 +560,34 @@ export default function Ting() {
     setLng(Lng);
   };
 
-  const mintCFTwithouttransfer = () => {
-    setNoTransfer(false);
+  // const mintCFTwithouttransfer = () => {
+  //   setNoTransfer(false);
+  //   setType('event');
+  //   setTimeout(() => {
+  //     mintCNFT();
+  //   }, 500);
+  // };
 
-    setTimeout(() => {
-      mintCNFT();
-    }, 200);
-  };
+  // const mintCFTwithTrasnferMomento = async () => {
+  //   setTimeout(() => {
+  //     setNoTransfer(true);
+  //     setType('momento');
+  //     //mintCNFT();
+  //   }, 200);
 
-  const mintCFTwithTrasnfer = () => {
-    setNoTransfer(true);
-    mintCNFT();
-  };
+  //   setTimeout(() => {
+  //     console.log(transfer);
+  //     console.log(type);
+  //   },400);
+  // };
+
+  // const mintCFTwithTrasnferSocial = () => {
+  //   setNoTransfer(true);
+  //   setType('social');
+  //   setTimeout(() => {
+  //     mintCNFT();
+  //   }, 200);
+  // };
 
   return (
     <>
@@ -776,7 +838,7 @@ export default function Ting() {
                   placeholder="Momento Description"
                   keyboardType="email-address"
                 />
-                <TouchableOpacity onPress={() => addMomento('ff')}>
+                <TouchableOpacity onPress={() => mintCNFT("momento",true)}>
                   <View
                     style={{
                       backgroundColor: 'white',
@@ -883,7 +945,7 @@ export default function Ting() {
                   placeholder="Momento Description"
                   keyboardType="email-address"
                 />
-                <TouchableOpacity onPress={() => addSocial('ff')}>
+                <TouchableOpacity onPress={() => mintCNFT("social",true)}>
                   <View
                     style={{
                       backgroundColor: 'white',
@@ -998,7 +1060,7 @@ export default function Ting() {
                   onChangeText={timeHandlerForTime}
                   placeholder="Time"
                 />
-                <TouchableOpacity onPress={() => mintCFTwithouttransfer()}>
+                <TouchableOpacity onPress={() => mintCNFT("event",false)}>
                   {loading ? (
                     <>
                       <ActivityIndicator size="small" color="white" />
