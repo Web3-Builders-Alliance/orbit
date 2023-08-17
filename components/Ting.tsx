@@ -11,6 +11,9 @@ import {
   FlatList,
   PermissionsAndroid,
   TextInput,
+  Alert,
+  Linking,
+  ActivityIndicator,
 } from 'react-native';
 import {
   clusterApiUrl,
@@ -45,7 +48,10 @@ export default function Ting() {
   const [Lat, setLat] = useState('');
   const [Lng, setLng] = useState('');
   const [mint, setMint] = useState('');
-  const [transfer, setNoTransfer] = useState(true);
+  const [transfer, setNoTransfer] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+  const [transferLoading, settransferLoading] = useState(false);
 
   const [eventName, setEventName] = useState('');
   const [eventDesc, setEventDesc] = useState('');
@@ -85,7 +91,7 @@ export default function Ting() {
   };
 
   useEffect(() => {
-    getData()
+    getData();
     requestCameraPermission();
   }, []);
 
@@ -218,8 +224,16 @@ export default function Ting() {
           }
         });
         setEventData(array);
-        console.log(eventData);
         setisit(true);
+        console.log(array[0].mint);
+        setMint(array[0].mint);
+        setTimeout(() => {
+          console.log(array[0].mint);
+        }, 500);
+        // setTimeout(() => {
+        //   console.log(eventData[0].mint);
+        //   setMint(eventData[0].mint);
+        // },100);
       });
     openBottomSheetMarker();
   };
@@ -287,8 +301,9 @@ export default function Ting() {
         recoveredTransaction.serialize(),
       );
       console.log('txSig from v3-' + txnSignature);
+      settransferLoading(false);
     } catch (error) {
-      console.log(error);
+      console.log('from v3-' + error);
     }
   };
 
@@ -309,7 +324,7 @@ export default function Ting() {
       );
       console.log('tx hash from v2-' + txnSignature);
       console.log(`Mint v2 - ${mint}`);
-      if (!transfer) {
+      if (transfer) {
         setTimeout(() => {
           transferCNFT(mint);
         }, 500);
@@ -317,12 +332,31 @@ export default function Ting() {
       setTimeout(() => {
         addEvent(mint);
       }, 700);
+      Alert.alert(
+        'Evnet Published',
+        `TxSignature : https://translator.shyft.to/tx/${txnSignature}?cluster=devnet and your mint is ${mint}`,
+        [
+          {
+            text: 'Dismiss',
+            onPress: () => console.log('No Pressed'),
+            style: 'cancel',
+          },
+          {
+            text: 'Explorer',
+            onPress: () =>
+              Linking.openURL(
+                `https://translator.shyft.to/tx/${txnSignature}?cluster=devnet`,
+              ),
+          },
+        ],
+      );
     } catch (error) {
       console.log('error from v2' + error);
     }
   };
 
   const mintCNFT = () => {
+    setLoading(true);
     var myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     myHeaders.append('x-api-key', 'HI_eHFd0SX8ykSDW');
@@ -395,6 +429,7 @@ export default function Ting() {
   };
 
   const transferCNFT = (mintAddress: string) => {
+    settransferLoading(true);
     var myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     myHeaders.append('x-api-key', 'HI_eHFd0SX8ykSDW');
@@ -466,18 +501,30 @@ export default function Ting() {
         desc: eventDesc,
         time: time_for_event,
         type: 'event',
-        img: '',
+        img: 'https://firebasestorage.googleapis.com/v0/b/orbit-4ea31.appspot.com/o/img.jpg?alt=media&token=5a6d47ef-fa7f-46d6-95ba-0cf0cb26b9e6',
       })
       .then(() => {
         console.log('Event Data Added');
+        setLoading(false);
       });
   };
-
-  const publishEvent = () => {}
 
   const setLatLngforMomento = (Lat: string, Lng: string) => {
     setLat(Lat);
     setLng(Lng);
+  };
+
+  const mintCFTwithouttransfer = () => {
+    setNoTransfer(false);
+
+    setTimeout(() => {
+      mintCNFT();
+    }, 200);
+  };
+
+  const mintCFTwithTrasnfer = () => {
+    setNoTransfer(true);
+    mintCNFT();
   };
 
   return (
@@ -576,45 +623,65 @@ export default function Ting() {
                   </>
                 ) : (
                   <>
-                    <Image
-                      source={{
-                        uri: 'https://picsum.photos/200',
-                      }}
-                      style={newStyle.logoPointer}
-                    />
+                    <ActivityIndicator size={'large'} color="white" />
                   </>
                 )}
               </View>
-
               <View style={newStyle.detailBox}>
-                <Text style={newStyle.text}>
-                  {isit ? eventData[0].name : 'TestEent'}
-                </Text>
-                <Text style={newStyle.subtext}>
-                  {isit ? eventData[0].desc : 'Event Description'}
-                </Text>
+                <ScrollView>
+                  <Text style={newStyle.text}>
+                    {isit ? (
+                      eventData[0].name
+                    ) : (
+                      <ActivityIndicator size={'small'} color="white" />
+                    )}
+                  </Text>
+                  <Text style={newStyle.subtext}>
+                    {isit ? (
+                      eventData[0].desc
+                    ) : (
+                      <ActivityIndicator size={'small'} color="white" />
+                    )}
+                  </Text>
 
-                <Text style={newStyle.subtext}>
-                  Time : {isit ? eventData[0].time : '1500:1900'}
-                </Text>
-                <TouchableOpacity onPress={closeBottomSheetMarker}>
-                  <View
-                    style={{
-                      backgroundColor: 'white',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderRadius: 15,
-                      height: 45,
-                      marginLeft: 16,
-                      marginRight: 16,
-                      marginTop: 20,
-                      marginBottom: 20,
-                    }}>
-                    <Text style={{color: 'black', fontSize: 18}}>
-                      Book Ticket
-                    </Text>
-                  </View>
-                </TouchableOpacity>
+                  <Text style={newStyle.subtext}>
+                    Time :{' '}
+                    {isit ? (
+                      eventData[0].time
+                    ) : (
+                      <ActivityIndicator size={'small'} color="white" />
+                    )}
+                  </Text>
+                </ScrollView>
+
+                <>
+                  {transferLoading ? (
+                    <>
+                      <ActivityIndicator size={'small'} color="white" />
+                    </>
+                  ) : (
+                    <>
+                      <TouchableOpacity onPress={() => transferCNFT(mint)}>
+                        <View
+                          style={{
+                            backgroundColor: 'white',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: 15,
+                            height: 45,
+                            marginLeft: 16,
+                            marginRight: 16,
+                            marginTop: 35,
+                            marginBottom: 20,
+                          }}>
+                          <Text style={{color: 'black', fontSize: 18}}>
+                            Book Ticket
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    </>
+                  )}
+                </>
               </View>
             </ScrollView>
             <TouchableOpacity onPress={closeBottomSheetMarker}>
@@ -856,10 +923,12 @@ export default function Ting() {
               <View style={newStyle.mainapp}>
                 <>
                   <View style={styles.headerForMomentoBottom}>
-                    <Text style={styles.text}>Host Event</Text>
+                    <Text style={styles.text}>Host Events</Text>
                   </View>
                   <View style={styles.header}>
-                    <Text style={styles.textForBottomSheet}>Select Event Image</Text>
+                    <Text style={styles.textForBottomSheet}>
+                      Select Event Image
+                    </Text>
                   </View>
                   <View style={styles.header}>
                     <Image
@@ -929,17 +998,25 @@ export default function Ting() {
                   onChangeText={timeHandlerForTime}
                   placeholder="Time"
                 />
-                <TouchableOpacity>
-                  <View
-                    style={{
-                      backgroundColor: 'white',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderRadius: 15,
-                      height: 45,
-                    }}>
-                    <Text style={{color: 'black', fontSize: 18}}>Done</Text>
-                  </View>
+                <TouchableOpacity onPress={() => mintCFTwithouttransfer()}>
+                  {loading ? (
+                    <>
+                      <ActivityIndicator size="small" color="white" />
+                    </>
+                  ) : (
+                    <>
+                      <View
+                        style={{
+                          backgroundColor: 'white',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: 15,
+                          height: 45,
+                        }}>
+                        <Text style={{color: 'black', fontSize: 18}}>Done</Text>
+                      </View>
+                    </>
+                  )}
                 </TouchableOpacity>
               </View>
             </ScrollView>
@@ -1510,7 +1587,7 @@ const newStyle = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 138,
-    marginTop:20,
+    marginTop: 20,
     width: 70,
     height: 70,
     borderRadius: 20,
