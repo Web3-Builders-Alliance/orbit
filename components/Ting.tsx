@@ -69,6 +69,9 @@ export default function Ting() {
   const [momentoDesc, setMomentoDesc] = useState('');
   const [socialName, setSocialName] = useState('');
   const [socialDesc, setSocialDesc] = useState('');
+  const [address, setAddress] = useState(
+    '44n5CYX18L6p4VxVECE9ZNYrAGB9GKD477b78kPNq5Su',
+  );
 
   const momentoNameHadler = (e: any) => {
     setMomentoName(e);
@@ -99,10 +102,13 @@ export default function Ting() {
   };
 
   useEffect(() => {
-    allAllNFTs()
     getData();
     requestCameraPermission();
   }, []);
+
+  useEffect(() => {
+    allAllNFTs(address);
+  }, [address]);
 
   const requestCameraPermission = async () => {
     try {
@@ -211,7 +217,8 @@ export default function Ting() {
       });
   };
 
-  const allAllNFTs = () => {
+  const allAllNFTs = (address: string) => {
+    console.log(address);
     var myHeaders = new Headers();
     myHeaders.append('x-api-key', 'HI_eHFd0SX8ykSDW');
 
@@ -222,7 +229,7 @@ export default function Ting() {
     };
 
     fetch(
-      'https://api.shyft.to/sol/v1/nft/read_all?network=mainnet-beta&address=44n5CYX18L6p4VxVECE9ZNYrAGB9GKD477b78kPNq5Su',
+      `https://api.shyft.to/sol/v1/nft/read_all?network=mainnet-beta&address=${address}`,
       requestOptions,
     )
       .then(response => response.json())
@@ -252,6 +259,7 @@ export default function Ting() {
         setisit(true);
         console.log(array[0].mint);
         setMint(array[0].mint);
+
         setTimeout(() => {
           console.log(array[0].mint);
         }, 500);
@@ -342,6 +350,7 @@ export default function Ting() {
           }
         });
         setPersonData(array);
+        setAddress(array[0].wallet);
         console.log(personData);
         setPeronisit(true);
       });
@@ -665,25 +674,81 @@ export default function Ting() {
                   </>
                 ) : (
                   <>
-                    <Image
-                      source={{
-                        uri: 'https://picsum.photos/200',
-                      }}
-                      style={newStyle.logo}
-                    />
+                    <ActivityIndicator size={'small'} color="white" />
                   </>
                 )}
               </View>
 
-              <View style={newStyle.detailBox}>
+              <View style={newStyle.detailBoxv2}>
                 <Text style={newStyle.text}>
-                  {personisit ? personData[0].name : 'Name'}
+                  {personisit ? (
+                    personData[0].name
+                  ) : (
+                    <ActivityIndicator size={'small'} color="white" />
+                  )}
+                </Text>
+                <Text style={newStyle.subtext}>
+                  {personisit ? (
+                    personData[0].bio
+                  ) : (
+                    <ActivityIndicator size={'small'} color="white" />
+                  )}
                 </Text>
                 <Text style={newStyle.subtext}>Wallet Address : </Text>
                 <Text style={newStyle.subtext}>
-                  BZBT4C6UsEeow9ebLRymhtTtZj9sYDw3WkwZHHbFg2YY
+                  {personisit ? (
+                    personData[0].wallet
+                  ) : (
+                    <ActivityIndicator size={'small'} color="white" />
+                  )}
                 </Text>
-                <Text style={newStyle.subtext}>Friends : 10</Text>
+                
+                <Text style={newStyle.subtext}>
+                  {personisit ? (
+                    "Friends - " + personData[0].friends
+                  ) : (
+                    <ActivityIndicator size={'small'} color="white" />
+                  )}
+                </Text>
+                <View style={bottomstyles.container}>
+            <View style={bottomstyles.buttonContainer}>
+              <TouchableOpacity onPress={OpenHostBottomSheet}>
+                <View
+                  style={{
+                    backgroundColor: 'white',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: 15,
+                    height: 40,
+                  }}>
+                  <Text
+                    style={{color: 'black', fontSize: 16, fontWeight: 'bold'}}>
+                    Add Friends
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            <View style={bottomstyles.buttonContainer}>
+              <TouchableOpacity
+                onPress={() => {
+                  OpenMomentoBottomSheet();
+                }}>
+                <View
+                  style={{
+                    backgroundColor: 'white',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: 15,
+                    height: 40,
+                  }}>
+                  <Text
+                    style={{color: 'black', fontSize: 16, fontWeight: 'bold'}}>
+                    Message
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
               </View>
               <Text style={newStyle.text}>NFT Collection</Text>
               <ScrollView>
@@ -933,12 +998,14 @@ export default function Ting() {
                         justifyContent: 'center',
                         borderRadius: 15,
                         height: 45,
-                        marginTop : 20,
-                        marginLeft : 16,
-                        marginRight : 16,
-                        marginBottom : 16
+                        marginTop: 20,
+                        marginLeft: 16,
+                        marginRight: 16,
+                        marginBottom: 16,
                       }}>
-                      <Text style={{color: 'black', fontSize: 18}}>Find it Useful , donate!</Text>
+                      <Text style={{color: 'black', fontSize: 18}}>
+                        Find it Useful , donate!
+                      </Text>
                     </View>
                   </TouchableOpacity>
                 </ScrollView>
@@ -1044,7 +1111,6 @@ export default function Ting() {
                       justifyContent: 'center',
                       borderRadius: 15,
                       height: 45,
-                      
                     }}>
                     <Text style={{color: 'black', fontSize: 18}}>
                       Mint CFT as Momento
@@ -1804,7 +1870,7 @@ const newStyle = StyleSheet.create({
   logo: {
     width: 80,
     height: 80,
-    borderRadius: 10,
+    borderRadius: 50,
     margin: 5,
   },
   logoPointer: {
@@ -1825,6 +1891,15 @@ const newStyle = StyleSheet.create({
   },
   detailBox: {
     height: 300,
+    backgroundColor: '#343434',
+    marginTop: 20,
+    marginLeft: 10,
+    marginRight: 10,
+    borderRadius: 30,
+    marginBottom: 20,
+  },
+  detailBoxv2: {
+    height: 350,
     backgroundColor: '#343434',
     marginTop: 20,
     marginLeft: 10,
