@@ -23,6 +23,7 @@ import {
   Commitment,
 } from '@solana/web3.js';
 import wallet from '../wallet/wallet';
+import {Switch} from 'react-native-paper';
 import {BsFillPersonFill} from 'react-icons/bs';
 import {Dimensions} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
@@ -35,6 +36,9 @@ import * as bs58 from 'bs58';
 
 export default function Ting() {
   const [shyft, setShyft] = useState([]);
+  const [switchOn, setSwitchOn] = useState(false)
+  const [switchOn1, setSwitchOn1] = useState(false)
+  const [switchOn2, setSwitchOn2] = useState(false)
   const [personData, setPersonData] = useState([]);
   const [eventData, setEventData] = useState([]);
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
@@ -702,53 +706,61 @@ export default function Ting() {
                     <ActivityIndicator size={'small'} color="white" />
                   )}
                 </Text>
-                
+
                 <Text style={newStyle.subtext}>
                   {personisit ? (
-                    "Friends - " + personData[0].friends
+                    'Friends - ' + personData[0].friends
                   ) : (
                     <ActivityIndicator size={'small'} color="white" />
                   )}
                 </Text>
                 <View style={bottomstyles.container}>
-            <View style={bottomstyles.buttonContainer}>
-              <TouchableOpacity onPress={OpenHostBottomSheet}>
-                <View
-                  style={{
-                    backgroundColor: 'white',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderRadius: 15,
-                    height: 40,
-                  }}>
-                  <Text
-                    style={{color: 'black', fontSize: 16, fontWeight: 'bold'}}>
-                    Add Friends
-                  </Text>
+                  <View style={bottomstyles.buttonContainer}>
+                    <TouchableOpacity onPress={OpenHostBottomSheet}>
+                      <View
+                        style={{
+                          backgroundColor: 'white',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: 15,
+                          height: 40,
+                        }}>
+                        <Text
+                          style={{
+                            color: 'black',
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                          }}>
+                          Add Friends
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={bottomstyles.buttonContainer}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        OpenMomentoBottomSheet();
+                      }}>
+                      <View
+                        style={{
+                          backgroundColor: 'white',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: 15,
+                          height: 40,
+                        }}>
+                        <Text
+                          style={{
+                            color: 'black',
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                          }}>
+                          Message
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </TouchableOpacity>
-            </View>
-            <View style={bottomstyles.buttonContainer}>
-              <TouchableOpacity
-                onPress={() => {
-                  OpenMomentoBottomSheet();
-                }}>
-                <View
-                  style={{
-                    backgroundColor: 'white',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderRadius: 15,
-                    height: 40,
-                  }}>
-                  <Text
-                    style={{color: 'black', fontSize: 16, fontWeight: 'bold'}}>
-                    Message
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </View>
               </View>
               <Text style={newStyle.text}>NFT Collection</Text>
               <ScrollView>
@@ -1103,6 +1115,21 @@ export default function Ting() {
                   placeholder="Momento Description"
                   keyboardType="email-address"
                 />
+                <View style={styles.containerToogle}>
+                  <Text style={{color : "white" , fontSize : 16}} >Share with Everyone</Text>
+                  <Switch value={switchOn} onValueChange={() => {
+                setSwitchOn(!switchOn)}}/>
+                </View>
+                <View style={styles.containerToogle}>
+                  <Text style={{color : "white" , fontSize : 16}} >Share with Friends</Text>
+                  <Switch value={switchOn1} onValueChange={() => {
+                setSwitchOn1(!switchOn1)}}/>
+                </View>
+                <View style={styles.containerToogle}>
+                  <Text style={{color : "white" , fontSize : 16}} >Keep it to yourself</Text>
+                  <Switch value={switchOn2} onValueChange={() => {
+                setSwitchOn2(!switchOn2)}}/>
+                </View>
                 <TouchableOpacity onPress={() => mintCNFT('momento', true)}>
                   <View
                     style={{
@@ -1806,6 +1833,11 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingTop: 8,
+  },
+  containerToogle: {
+    padding: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   },
   tinyLogo: {
     width: 70,
