@@ -4,8 +4,8 @@ import {View, StyleSheet, Text, Button} from 'react-native';
 const MarketPlace = ({}) => {
   return (
     <View style={styles.container}>
-      <Text>Find Screen (MarketPlace)</Text>
-      <Button title="Click Here" />
+      <Text style = {styles.text}>No Trade Initiated by You !!</Text>
+      
     </View>
   );
 };
@@ -17,6 +17,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#8fcbbc',
+    backgroundColor: 'black',
   },
+  text : {
+    fontSize : 16
+  }
 });

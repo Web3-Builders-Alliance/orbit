@@ -1440,7 +1440,7 @@ export default function Ting() {
                   />
                 </View>
                 <View style={{flex: 6}}>
-                  <Text style={{marginLeft: 20, marginTop: 10}}>User1</Text>
+                  <Text style={{marginLeft: 20, marginTop: 10}}>Sarah</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -1460,7 +1460,7 @@ export default function Ting() {
                 />
               </View>
               <View style={{flex: 6}}>
-                <Text style={{marginLeft: 20, marginTop: 10}}>User1</Text>
+                <Text style={{marginLeft: 20, marginTop: 10}}>James</Text>
               </View>
             </View>
             <View
@@ -1479,7 +1479,7 @@ export default function Ting() {
                 />
               </View>
               <View style={{flex: 6}}>
-                <Text style={{marginLeft: 20, marginTop: 10}}>User1</Text>
+                <Text style={{marginLeft: 20, marginTop: 10}}>Alice</Text>
               </View>
             </View>
             <View
@@ -1498,7 +1498,7 @@ export default function Ting() {
                 />
               </View>
               <View style={{flex: 6}}>
-                <Text style={{marginLeft: 20, marginTop: 10}}>User1</Text>
+                <Text style={{marginLeft: 20, marginTop: 10}}>Kevin</Text>
               </View>
             </View>
             <View
@@ -1517,7 +1517,7 @@ export default function Ting() {
                 />
               </View>
               <View style={{flex: 6}}>
-                <Text style={{marginLeft: 20, marginTop: 10}}>User1</Text>
+                <Text style={{marginLeft: 20, marginTop: 10}}>Emily</Text>
               </View>
             </View>
           </View>
