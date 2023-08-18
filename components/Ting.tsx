@@ -42,6 +42,12 @@ export default function Ting() {
   const [openMomentoBottomSheet, setOpenMomentoBottomSheet] = useState(false);
   const [openSocialBottomSheet, setOpenSocialBottomSheet] = useState(false);
   const [openHostBottomSheet, setopenHostBottomSheet] = useState(false);
+
+  const [displayMomentoBottomSheet, setDisplayMomentoBottomSheet] =
+    useState(false);
+  const [displaySocialBottomSheet, setDisplaySocailBottomSheet] =
+    useState(false);
+
   const [isit, setisit] = useState(false);
   const [personisit, setPeronisit] = useState(false);
   const [users, setusers] = useState([]);
@@ -93,6 +99,7 @@ export default function Ting() {
   };
 
   useEffect(() => {
+    allAllNFTs()
     getData();
     requestCameraPermission();
   }, []);
@@ -173,6 +180,22 @@ export default function Ting() {
     setopenHostBottomSheet(false);
   };
 
+  const OpenDisplayMomentoBottomSheet = () => {
+    setDisplayMomentoBottomSheet(true);
+  };
+
+  const CloseDisplayMomentoBottomSheet = () => {
+    setDisplayMomentoBottomSheet(false);
+  };
+
+  const OpenDisplaySocialBottomSheet = () => {
+    setDisplaySocailBottomSheet(true);
+  };
+
+  const CloseDisplaySocailBottomSheet = () => {
+    setDisplaySocailBottomSheet(false);
+  };
+
   const getData = () => {
     const array: any[] = [];
     firestore()
@@ -240,6 +263,68 @@ export default function Ting() {
     openBottomSheetMarker();
   };
 
+  const getDataForMomentoBottomSheet = (Lat: number, Lng: number) => {
+    setisit(false);
+    const array: any[] = [];
+    firestore()
+      .collection('Users')
+      .where('Lat', '==', Lat)
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(documentSnapshot => {
+          if (documentSnapshot.exists) {
+            //console.log(documentSnapshot.data());
+            array.push(documentSnapshot.data());
+          } else {
+            console.log('Data not found');
+          }
+        });
+        setEventData(array);
+        setisit(true);
+        console.log(array[0].mint);
+        setMint(array[0].mint);
+        setTimeout(() => {
+          console.log(array[0].mint);
+        }, 500);
+        // setTimeout(() => {
+        //   console.log(eventData[0].mint);
+        //   setMint(eventData[0].mint);
+        // },100);
+      });
+    OpenDisplayMomentoBottomSheet();
+  };
+
+  const getDataForSocialBottomSheet = (Lat: number, Lng: number) => {
+    setisit(false);
+    const array: any[] = [];
+    firestore()
+      .collection('Users')
+      .where('Lat', '==', Lat)
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(documentSnapshot => {
+          if (documentSnapshot.exists) {
+            //console.log(documentSnapshot.data());
+            array.push(documentSnapshot.data());
+          } else {
+            console.log('Data not found');
+          }
+        });
+        setEventData(array);
+        setisit(true);
+        console.log(array[0].mint);
+        setMint(array[0].mint);
+        setTimeout(() => {
+          console.log(array[0].mint);
+        }, 500);
+        // setTimeout(() => {
+        //   console.log(eventData[0].mint);
+        //   setMint(eventData[0].mint);
+        // },100);
+      });
+    OpenDisplaySocialBottomSheet();
+  };
+
   const ching = (Lat: number, Lng: number) => {
     setPeronisit(false);
     const array: any[] = [];
@@ -267,8 +352,8 @@ export default function Ting() {
     encodedTransaction: string,
     fromPrivateKey: string,
     tree: string,
-    type : string,
-    transfer : boolean
+    type: string,
+    transfer: boolean,
   ) => {
     try {
       const connection = new Connection(clusterApiUrl('devnet'), 'finalized');
@@ -283,7 +368,7 @@ export default function Ting() {
       console.log('txSig from 1-' + txnSignature);
       console.log('Tree from 1-' + tree);
       setTimeout(() => {
-        finalCFTMint(tree,type,transfer);
+        finalCFTMint(tree, type, transfer);
       }, 500);
     } catch (error) {
       console.log(error);
@@ -333,8 +418,8 @@ export default function Ting() {
     encodedTransaction: string,
     fromPrivateKey: string,
     mint: string,
-    type : string,
-    transfer : boolean
+    type: string,
+    transfer: boolean,
   ) => {
     try {
       const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
@@ -395,7 +480,7 @@ export default function Ting() {
     }
   };
 
-  const mintCNFT = (type : string , transfer : boolean) => {
+  const mintCNFT = (type: string, transfer: boolean) => {
     setLoading(true);
     var myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
@@ -429,13 +514,13 @@ export default function Ting() {
           wallet,
           result.result.tree,
           type,
-          transfer
+          transfer,
         ),
       )
       .catch(error => console.log('error', error));
   };
 
-  const finalCFTMint = (tree: string , type : string , transfer : boolean) => {
+  const finalCFTMint = (tree: string, type: string, transfer: boolean) => {
     var myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     myHeaders.append('x-api-key', 'HI_eHFd0SX8ykSDW');
@@ -465,8 +550,8 @@ export default function Ting() {
           result.result.encoded_transaction,
           wallet,
           result.result.mint,
-          type ,
-          transfer
+          type,
+          transfer,
         ),
       )
       .catch(error => console.log('error from final', error));
@@ -514,7 +599,7 @@ export default function Ting() {
       })
       .then(() => {
         console.log('Momento Data Added');
-        setLoading(false)
+        setLoading(false);
       });
   };
 
@@ -532,7 +617,7 @@ export default function Ting() {
       })
       .then(() => {
         console.log('Social Data Added');
-        setLoading(false)
+        setLoading(false);
       });
   };
 
@@ -559,35 +644,6 @@ export default function Ting() {
     setLat(Lat);
     setLng(Lng);
   };
-
-  // const mintCFTwithouttransfer = () => {
-  //   setNoTransfer(false);
-  //   setType('event');
-  //   setTimeout(() => {
-  //     mintCNFT();
-  //   }, 500);
-  // };
-
-  // const mintCFTwithTrasnferMomento = async () => {
-  //   setTimeout(() => {
-  //     setNoTransfer(true);
-  //     setType('momento');
-  //     //mintCNFT();
-  //   }, 200);
-
-  //   setTimeout(() => {
-  //     console.log(transfer);
-  //     console.log(type);
-  //   },400);
-  // };
-
-  // const mintCFTwithTrasnferSocial = () => {
-  //   setNoTransfer(true);
-  //   setType('social');
-  //   setTimeout(() => {
-  //     mintCNFT();
-  //   }, 200);
-  // };
 
   return (
     <>
@@ -761,6 +817,148 @@ export default function Ting() {
           </BottomSheet>
         </View>
 
+        {/* Bottom Sheet for display momento */}
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <BottomSheet
+            visible={displayMomentoBottomSheet}
+            onClose={CloseDisplayMomentoBottomSheet}>
+            <ScrollView nestedScrollEnabled={true}>
+              <View style={newStyle.mainapp}>
+                {isit ? (
+                  <>
+                    <Image
+                      source={{
+                        uri: eventData[0].img,
+                      }}
+                      style={newStyle.logoPointer}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <ActivityIndicator size={'large'} color="white" />
+                  </>
+                )}
+              </View>
+              <View style={newStyle.detailBox}>
+                <ScrollView>
+                  <Text style={newStyle.text}>
+                    {isit ? (
+                      eventData[0].name
+                    ) : (
+                      <ActivityIndicator size={'small'} color="white" />
+                    )}
+                  </Text>
+                  <Text style={newStyle.subtext}>
+                    {isit ? (
+                      eventData[0].desc
+                    ) : (
+                      <ActivityIndicator size={'small'} color="white" />
+                    )}
+                  </Text>
+                  <Text style={newStyle.subtext}>
+                    {isit ? (
+                      'Posted By - ' + eventData[0].wallet
+                    ) : (
+                      <ActivityIndicator size={'small'} color="white" />
+                    )}
+                  </Text>
+                </ScrollView>
+              </View>
+            </ScrollView>
+            <TouchableOpacity onPress={CloseDisplayMomentoBottomSheet}>
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 15,
+                  height: 45,
+                }}>
+                <Text style={{color: 'black', fontSize: 18}}>Close</Text>
+              </View>
+            </TouchableOpacity>
+          </BottomSheet>
+        </View>
+
+        {/* Bottom Sheet for display socail */}
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <BottomSheet
+            visible={displaySocialBottomSheet}
+            onClose={CloseDisplaySocailBottomSheet}>
+            <ScrollView nestedScrollEnabled={true}>
+              <View style={newStyle.mainapp}>
+                {isit ? (
+                  <>
+                    <Image
+                      source={{
+                        uri: eventData[0].img,
+                      }}
+                      style={newStyle.logoPointer}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <ActivityIndicator size={'large'} color="white" />
+                  </>
+                )}
+              </View>
+              <View style={newStyle.detailBox}>
+                <ScrollView>
+                  <Text style={newStyle.text}>
+                    {isit ? (
+                      eventData[0].name
+                    ) : (
+                      <ActivityIndicator size={'small'} color="white" />
+                    )}
+                  </Text>
+                  <Text style={newStyle.subtext}>
+                    {isit ? (
+                      eventData[0].desc
+                    ) : (
+                      <ActivityIndicator size={'small'} color="white" />
+                    )}
+                  </Text>
+                  <Text style={newStyle.subtext}>
+                    {isit ? (
+                      'Posted By - ' + eventData[0].wallet
+                    ) : (
+                      <ActivityIndicator size={'small'} color="white" />
+                    )}
+                  </Text>
+                  <TouchableOpacity onPress={CloseDisplaySocailBottomSheet}>
+                    <View
+                      style={{
+                        backgroundColor: 'white',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: 15,
+                        height: 45,
+                        marginTop : 20,
+                        marginLeft : 16,
+                        marginRight : 16,
+                        marginBottom : 16
+                      }}>
+                      <Text style={{color: 'black', fontSize: 18}}>Find it Useful , donate!</Text>
+                    </View>
+                  </TouchableOpacity>
+                </ScrollView>
+              </View>
+            </ScrollView>
+            <TouchableOpacity onPress={CloseDisplaySocailBottomSheet}>
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 15,
+                  height: 45,
+                }}>
+                <Text style={{color: 'black', fontSize: 18}}>Close</Text>
+              </View>
+            </TouchableOpacity>
+          </BottomSheet>
+        </View>
+
         {/* Bottom sheet for momento */}
 
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -838,7 +1036,7 @@ export default function Ting() {
                   placeholder="Momento Description"
                   keyboardType="email-address"
                 />
-                <TouchableOpacity onPress={() => mintCNFT("momento",true)}>
+                <TouchableOpacity onPress={() => mintCNFT('momento', true)}>
                   <View
                     style={{
                       backgroundColor: 'white',
@@ -846,6 +1044,7 @@ export default function Ting() {
                       justifyContent: 'center',
                       borderRadius: 15,
                       height: 45,
+                      
                     }}>
                     <Text style={{color: 'black', fontSize: 18}}>
                       Mint CFT as Momento
@@ -945,7 +1144,7 @@ export default function Ting() {
                   placeholder="Momento Description"
                   keyboardType="email-address"
                 />
-                <TouchableOpacity onPress={() => mintCNFT("social",true)}>
+                <TouchableOpacity onPress={() => mintCNFT('social', true)}>
                   <View
                     style={{
                       backgroundColor: 'white',
@@ -1060,7 +1259,7 @@ export default function Ting() {
                   onChangeText={timeHandlerForTime}
                   placeholder="Time"
                 />
-                <TouchableOpacity onPress={() => mintCNFT("event",false)}>
+                <TouchableOpacity onPress={() => mintCNFT('event', false)}>
                   {loading ? (
                     <>
                       <ActivityIndicator size="small" color="white" />
@@ -1253,16 +1452,11 @@ export default function Ting() {
                       <>
                         <Marker
                           onPress={() => ching(item.Lat, item.Lat)}
-                          draggable
                           coordinate={{
                             latitude: item.Lat,
                             longitude: item.Lng,
                           }}
-                          onDragEnd={e =>
-                            alert(JSON.stringify(e.nativeEvent.coordinate))
-                          }
-                          title={'Test Marker'}
-                          description={'This is a description of the marker'}>
+                          title={'User'}>
                           <Image
                             source={require('../img/man.png')}
                             style={styles.markerlogoim}
@@ -1276,16 +1470,11 @@ export default function Ting() {
                       <>
                         <Marker
                           onPress={() => ching(item.Lat, item.Lat)}
-                          draggable
                           coordinate={{
                             latitude: item.Lat,
                             longitude: item.Lng,
                           }}
-                          onDragEnd={e =>
-                            alert(JSON.stringify(e.nativeEvent.coordinate))
-                          }
-                          title={'Test Marker'}
-                          description={'This is a description of the marker'}>
+                          title={'User'}>
                           <Image
                             source={require('../img/wooman.png')}
                             style={styles.markerlogoim}
@@ -1302,18 +1491,11 @@ export default function Ting() {
                         onPress={() =>
                           getDataForBottomSheet(item.Lat, item.Lat)
                         }
-                        draggable
                         coordinate={{
                           latitude: item.Lat,
                           longitude: item.Lng,
                         }}
-                        onDragEnd={e =>
-                          alert(
-                            JSON.stringify(e.nativeEvent.coordinate.longitude),
-                          )
-                        }
-                        title={'Test Marker'}
-                        description={'This is a description of the marker'}>
+                        title={'Event'}>
                         <Image
                           source={require('../img/placard.png')}
                           style={styles.markerlogoim}
@@ -1327,20 +1509,13 @@ export default function Ting() {
                     <>
                       <Marker
                         onPress={() =>
-                          getDataForBottomSheet(item.Lat, item.Lat)
+                          getDataForMomentoBottomSheet(item.Lat, item.Lat)
                         }
-                        draggable
                         coordinate={{
                           latitude: item.Lat,
                           longitude: item.Lng,
                         }}
-                        onDragEnd={e =>
-                          alert(
-                            JSON.stringify(e.nativeEvent.coordinate.longitude),
-                          )
-                        }
-                        title={'Test Marker'}
-                        description={'This is a description of the marker'}>
+                        title={'Momento'}>
                         <Image
                           source={require('../img/landmark.png')}
                           style={styles.markerlogoim}
@@ -1354,20 +1529,13 @@ export default function Ting() {
                     <>
                       <Marker
                         onPress={() =>
-                          getDataForBottomSheet(item.Lat, item.Lat)
+                          getDataForSocialBottomSheet(item.Lat, item.Lat)
                         }
-                        draggable
                         coordinate={{
                           latitude: item.Lat,
                           longitude: item.Lng,
                         }}
-                        onDragEnd={e =>
-                          alert(
-                            JSON.stringify(e.nativeEvent.coordinate.longitude),
-                          )
-                        }
-                        title={'Test Marker'}
-                        description={'This is a description of the marker'}>
+                        title={'Social'}>
                         <Image
                           source={require('../img/warning.png')}
                           style={styles.markerlogoim}
@@ -1656,7 +1824,7 @@ const newStyle = StyleSheet.create({
     margin: 5,
   },
   detailBox: {
-    height: 250,
+    height: 300,
     backgroundColor: '#343434',
     marginTop: 20,
     marginLeft: 10,
@@ -1666,7 +1834,7 @@ const newStyle = StyleSheet.create({
   },
   text: {
     color: 'white',
-    marginLeft: 25,
+    marginLeft: 15,
     marginTop: 20,
     fontSize: 25,
     fontWeight: 'bold',
