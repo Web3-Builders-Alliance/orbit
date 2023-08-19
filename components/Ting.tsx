@@ -207,6 +207,7 @@ export default function Ting() {
   };
 
   const getData = () => {
+    setLoading(true);
     const array: any[] = [];
     firestore()
       .collection('Users')
@@ -218,6 +219,7 @@ export default function Ting() {
         });
         setusers(array);
         console.log(users);
+        setLoading(false);
       });
   };
 
@@ -403,7 +405,7 @@ export default function Ting() {
         recoveredTransaction.serialize(),
       );
       Alert.alert(
-        'Ticket Recieved',
+        'Done',
         `TxSignature : https://translator.shyft.to/tx/${txnSignature}?cluster=devnet`,
         [
           {
@@ -471,7 +473,7 @@ export default function Ting() {
       }
 
       Alert.alert(
-        'Evnet Published',
+        'Done',
         `TxSignature : https://translator.shyft.to/tx/${txnSignature}?cluster=devnet and your mint is ${mint}`,
         [
           {
@@ -608,7 +610,8 @@ export default function Ting() {
         name: momentoName,
         desc: momentoDesc,
         type: 'momento',
-        img: '',
+        img: 'https://firebasestorage.googleapis.com/v0/b/orbit-4ea31.appspot.com/o/tw.jpg?alt=media&token=39a79a33-ceb3-42ba-8de7-86a41180d6d4',
+        wallet : "9WXdkS8Tq18PY2GoJy4Tq8d9HdzojyyCtbFg4QrQxJSk"
       })
       .then(() => {
         console.log('Momento Data Added');
@@ -626,7 +629,8 @@ export default function Ting() {
         name: socialName,
         desc: socialDesc,
         type: 'social',
-        img: '',
+        img: 'https://firebasestorage.googleapis.com/v0/b/orbit-4ea31.appspot.com/o/mk.jpg?alt=media&token=f4055ff1-885b-4de8-b642-32045d8ee18a',
+        wallet : "9WXdkS8Tq18PY2GoJy4Tq8d9HdzojyyCtbFg4QrQxJSk"
       })
       .then(() => {
         console.log('Social Data Added');
@@ -1149,18 +1153,30 @@ export default function Ting() {
                   />
                 </View>
                 <TouchableOpacity onPress={() => mintCNFT('momento', true)}>
-                  <View
-                    style={{
-                      backgroundColor: 'white',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderRadius: 15,
-                      height: 45,
-                    }}>
-                    <Text style={{color: 'black', fontSize: 18}}>
-                      Mint CFT as Momento
-                    </Text>
-                  </View>
+                  {loading ? (
+                    <>
+                      <View style={{
+                        marginBottom : 10
+                      }}>
+                        <ActivityIndicator size="small" color="white" />
+                      </View>
+                    </>
+                  ) : (
+                    <>
+                      <View
+                        style={{
+                          backgroundColor: 'white',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: 15,
+                          height: 45,
+                        }}>
+                        <Text style={{color: 'black', fontSize: 18}}>
+                          Mint CFT as Momento
+                        </Text>
+                      </View>
+                    </>
+                  )}
                 </TouchableOpacity>
               </View>
             </ScrollView>
@@ -1256,18 +1272,31 @@ export default function Ting() {
                   keyboardType="email-address"
                 />
                 <TouchableOpacity onPress={() => mintCNFT('social', true)}>
-                  <View
-                    style={{
-                      backgroundColor: 'white',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderRadius: 15,
-                      height: 45,
-                    }}>
-                    <Text style={{color: 'black', fontSize: 18}}>
-                      Mint CFT to Warn People
-                    </Text>
-                  </View>
+                  {loading ? (
+                    <>
+                      <View
+                        style={{
+                          marginBottom: 10,
+                        }}>
+                        <ActivityIndicator size="small" color="white" />
+                      </View>
+                    </>
+                  ) : (
+                    <>
+                      <View
+                        style={{
+                          backgroundColor: 'white',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: 15,
+                          height: 45,
+                        }}>
+                        <Text style={{color: 'black', fontSize: 18}}>
+                          Mint CFT to Warn People
+                        </Text>
+                      </View>
+                    </>
+                  )}
                 </TouchableOpacity>
               </View>
             </ScrollView>
@@ -1373,7 +1402,12 @@ export default function Ting() {
                 <TouchableOpacity onPress={() => mintCNFT('event', false)}>
                   {loading ? (
                     <>
-                      <ActivityIndicator size="small" color="white" />
+                      <View
+                        style={{
+                          marginBottom: 10,
+                        }}>
+                        <ActivityIndicator size="small" color="white" />
+                      </View>
                     </>
                   ) : (
                     <>
@@ -1544,12 +1578,28 @@ export default function Ting() {
             <View style={styles.discoverHeading}>
               <Text style={styles.text}>Discover</Text>
             </View>
-            <View style={bottomstyles.buttonContainer}>
-              <Image
-                source={require('../img/mcr3.png')}
-                style={styles.reloadmarkerlogoim}
-              />
-            </View>
+            {loading ? (
+              <>
+                <View
+                  style={{
+                    marginTop: 30,
+                    marginLeft: 10,
+                  }}>
+                  <ActivityIndicator size={'small'} color="white" />
+                </View>
+              </>
+            ) : (
+              <>
+                <TouchableOpacity onPress={() => getData()}>
+                  <View style={bottomstyles.buttonContainer}>
+                    <Image
+                      source={require('../img/mcr3.png')}
+                      style={styles.reloadmarkerlogoim}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </>
+            )}
           </View>
 
           <View style={styles.mapcontainer}>
@@ -1886,7 +1936,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   reloadmarkerlogoim: {
-   marginTop : 20,
+    marginTop: 20,
     marginLeft: 10,
     borderRadius: 50,
   },
