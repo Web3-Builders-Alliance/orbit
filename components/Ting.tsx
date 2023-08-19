@@ -36,9 +36,9 @@ import * as bs58 from 'bs58';
 
 export default function Ting() {
   const [shyft, setShyft] = useState([]);
-  const [switchOn, setSwitchOn] = useState(false)
-  const [switchOn1, setSwitchOn1] = useState(false)
-  const [switchOn2, setSwitchOn2] = useState(false)
+  const [switchOn, setSwitchOn] = useState(false);
+  const [switchOn1, setSwitchOn1] = useState(false);
+  const [switchOn2, setSwitchOn2] = useState(false);
   const [personData, setPersonData] = useState([]);
   const [eventData, setEventData] = useState([]);
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
@@ -1116,19 +1116,37 @@ export default function Ting() {
                   keyboardType="email-address"
                 />
                 <View style={styles.containerToogle}>
-                  <Text style={{color : "white" , fontSize : 16}} >Share with Everyone</Text>
-                  <Switch value={switchOn} onValueChange={() => {
-                setSwitchOn(!switchOn)}}/>
+                  <Text style={{color: 'white', fontSize: 16}}>
+                    Share with Everyone
+                  </Text>
+                  <Switch
+                    value={switchOn}
+                    onValueChange={() => {
+                      setSwitchOn(!switchOn);
+                    }}
+                  />
                 </View>
                 <View style={styles.containerToogle}>
-                  <Text style={{color : "white" , fontSize : 16}} >Share with Friends</Text>
-                  <Switch value={switchOn1} onValueChange={() => {
-                setSwitchOn1(!switchOn1)}}/>
+                  <Text style={{color: 'white', fontSize: 16}}>
+                    Share with Friends
+                  </Text>
+                  <Switch
+                    value={switchOn1}
+                    onValueChange={() => {
+                      setSwitchOn1(!switchOn1);
+                    }}
+                  />
                 </View>
                 <View style={styles.containerToogle}>
-                  <Text style={{color : "white" , fontSize : 16}} >Keep it to yourself</Text>
-                  <Switch value={switchOn2} onValueChange={() => {
-                setSwitchOn2(!switchOn2)}}/>
+                  <Text style={{color: 'white', fontSize: 16}}>
+                    Keep it to yourself
+                  </Text>
+                  <Switch
+                    value={switchOn2}
+                    onValueChange={() => {
+                      setSwitchOn2(!switchOn2);
+                    }}
+                  />
                 </View>
                 <TouchableOpacity onPress={() => mintCNFT('momento', true)}>
                   <View
@@ -1521,8 +1539,17 @@ export default function Ting() {
               </View>
             </View>
           </View>
-          <View style={styles.discoverHeading}>
-            <Text style={styles.text}>Discover</Text>
+
+          <View style={bottomstyles.container}>
+            <View style={styles.discoverHeading}>
+              <Text style={styles.text}>Discover</Text>
+            </View>
+            <View style={bottomstyles.buttonContainer}>
+              <Image
+                source={require('../img/mcr3.png')}
+                style={styles.reloadmarkerlogoim}
+              />
+            </View>
           </View>
 
           <View style={styles.mapcontainer}>
@@ -1855,6 +1882,11 @@ const styles = StyleSheet.create({
   markerlogoim: {
     width: 50,
     height: 50,
+    marginLeft: 10,
+    borderRadius: 50,
+  },
+  reloadmarkerlogoim: {
+   marginTop : 20,
     marginLeft: 10,
     borderRadius: 50,
   },
