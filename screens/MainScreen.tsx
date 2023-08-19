@@ -53,6 +53,48 @@ export default function MainScreen() {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {selectedAccount ? (
             <>
+            
+            </>
+          ):(
+            <>
+             <View style={{
+            marginTop : 40
+          }}>
+          <Text style={{
+            textAlign : "right",
+            fontSize : 90,
+            color : "white",
+            fontWeight : "bold",
+            marginRight : 10
+          }}>gm</Text>
+           <Text style={{
+            textAlign : "right",
+            fontSize : 90,
+            color : "white",
+            fontWeight : "bold",
+             marginRight : 10
+          }}>to the</Text>
+         
+          <Text style={{
+            textAlign : "right",
+            fontSize : 90,
+            color : "white",
+            fontWeight : "bold",
+            marginRight : 10
+          }}>orbit</Text>
+          <Text style={{
+            textAlign : "right",
+            fontSize : 90,
+            color : "white",
+            fontWeight : "bold",
+             marginRight : 10
+          }}>world !!</Text>
+          </View>
+            </>
+          )}
+         
+          {selectedAccount ? (
+            <>
               <SafeAreaView>
                 <ScrollView style={styles.scroolView}>
                   {/* <Section title="Account Info">
@@ -62,7 +104,7 @@ export default function MainScreen() {
                 />
                 /> */}
                   <Ting />
-                 
+
                   {/* <CallInstructionsFrontEnd/> */}
                   {/* </Section> */}
                 </ScrollView>
@@ -70,7 +112,13 @@ export default function MainScreen() {
             </>
           ) : null}
         </ScrollView>
-        {selectedAccount ? <></> : <ConnectButton title="Connect wallet" />}
+        
+        <View style={{
+          marginLeft : 16,
+          marginRight : 16,
+        }}>
+          {selectedAccount ? <></> : <ConnectButton title="Connect wallet" />}
+        </View>
       </View>
     </>
   );
