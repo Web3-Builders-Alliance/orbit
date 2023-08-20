@@ -384,6 +384,7 @@ export default function Ting() {
     tree: string,
     type: string,
     transfer: boolean,
+    metadata : string
   ) => {
     try {
       const connection = new Connection(clusterApiUrl('devnet'), 'finalized');
@@ -398,7 +399,7 @@ export default function Ting() {
       console.log('txSig from 1-' + txnSignature);
       console.log('Tree from 1-' + tree);
       setTimeout(() => {
-        finalCFTMint(tree, type, transfer);
+        finalCFTMint(tree, type, transfer , metadata);
       }, 500);
     } catch (error) {
       console.log(error);
@@ -510,7 +511,7 @@ export default function Ting() {
     }
   };
 
-  const mintCNFT = (type: string, transfer: boolean) => {
+  const mintCNFT = (type: string, transfer: boolean , metadata : string) => {
     setLoading(true);
     var myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
@@ -545,12 +546,13 @@ export default function Ting() {
           result.result.tree,
           type,
           transfer,
+          metadata
         ),
       )
       .catch(error => console.log('error', error));
   };
 
-  const finalCFTMint = (tree: string, type: string, transfer: boolean) => {
+  const finalCFTMint = (tree: string, type: string, transfer: boolean , metadata : string) => {
     var myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     myHeaders.append('x-api-key', 'HI_eHFd0SX8ykSDW');
@@ -559,7 +561,7 @@ export default function Ting() {
       network: 'devnet',
       creator_wallet: '2JSg1MdNqRg9z4RP7yiE2NV86fux2BNtF3pSDjhoi767',
       metadata_uri:
-        'https://gateway.pinata.cloud/ipfs/QmYmUb5MHZwYovnQg9qANTJUi7R8VaE5CetfssczaSWn5K',
+        metadata,
       merkle_tree: tree,
       max_supply: 1,
       is_mutable: true,
@@ -1223,7 +1225,7 @@ export default function Ting() {
                     }}
                   />
                 </View>
-                <TouchableOpacity onPress={() => mintCNFT('momento', true)}>
+                <TouchableOpacity onPress={() => mintCNFT('momento', true,"https://zn6kci2g7vgxltorxyntlc6x2rzbqx6bw7jjlzxw3h2khtw7k6ka.arweave.net/y3yhI0b9TXXN0b4bNYvX1HIYX8G30pXm9tn0o87fV5Q")}>
                   {loading ? (
                     <>
                       <View
@@ -1343,7 +1345,7 @@ export default function Ting() {
                   placeholder="Momento Description"
                   keyboardType="email-address"
                 />
-                <TouchableOpacity onPress={() => mintCNFT('social', true)}>
+                <TouchableOpacity onPress={() => mintCNFT('social', true , "https://kdpbrvc34pzksbyezxs4cuq45juqzza2vttfpr33ah4xid5g6ozq.arweave.net/UN4Y1Fvj8qkHBM3lwVIc6mkM5Bqs5lfHewH5dA-m87M")}>
                   {loading ? (
                     <>
                       <View
@@ -1471,7 +1473,7 @@ export default function Ting() {
                   onChangeText={timeHandlerForTime}
                   placeholder="Time"
                 />
-                <TouchableOpacity onPress={() => mintCNFT('event', false)}>
+                <TouchableOpacity onPress={() => mintCNFT('event', false,"https://zwgnkp42wmmlnt23rcb5tfu67nkle5cffcgcufwot7yun2owmuta.arweave.net/zYzVP5qzGLbPW4iD2Zae-1SydEUojCoWzp_xRunWZSY")}>
                   {loading ? (
                     <>
                       <View
