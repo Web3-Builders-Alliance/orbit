@@ -32,7 +32,7 @@ import firestore from '@react-native-firebase/firestore';
 import {TouchableOpacity} from 'react-native';
 import DisconnectButton from './DisconnectButton';
 import Geoloaction from 'react-native-geolocation-service';
-import ImagePicker from 'react-native-image-crop-picker'
+import ImagePicker from 'react-native-image-crop-picker';
 import storage from '@react-native-firebase/storage';
 import * as bs58 from 'bs58';
 
@@ -49,8 +49,9 @@ export default function Ting() {
   const [openSocialBottomSheet, setOpenSocialBottomSheet] = useState(false);
   const [openHostBottomSheet, setopenHostBottomSheet] = useState(false);
 
-  const [image , setImage] = useState(null)
-  const [uploading , setUploading] = useState(false)
+  const [image, setImage] = useState(null);
+  const [downloadUrl, setDownloadUrl] = useState('');
+  const [uploading, setUploading] = useState(false);
 
   const [displayMomentoBottomSheet, setDisplayMomentoBottomSheet] =
     useState(false);
@@ -162,7 +163,6 @@ export default function Ting() {
   const closeBottomSheet = () => {
     setBottomSheetVisible(false);
   };
-  
 
   const openBottomSheetMarker = () => {
     setBottomSheetMarker(true);
@@ -617,7 +617,7 @@ export default function Ting() {
         desc: momentoDesc,
         type: 'momento',
         img: 'https://firebasestorage.googleapis.com/v0/b/orbit-4ea31.appspot.com/o/tw.jpg?alt=media&token=39a79a33-ceb3-42ba-8de7-86a41180d6d4',
-        wallet : "9WXdkS8Tq18PY2GoJy4Tq8d9HdzojyyCtbFg4QrQxJSk"
+        wallet: '9WXdkS8Tq18PY2GoJy4Tq8d9HdzojyyCtbFg4QrQxJSk',
       })
       .then(() => {
         console.log('Momento Data Added');
@@ -636,7 +636,7 @@ export default function Ting() {
         desc: socialDesc,
         type: 'social',
         img: 'https://firebasestorage.googleapis.com/v0/b/orbit-4ea31.appspot.com/o/mk.jpg?alt=media&token=f4055ff1-885b-4de8-b642-32045d8ee18a',
-        wallet : "9WXdkS8Tq18PY2GoJy4Tq8d9HdzojyyCtbFg4QrQxJSk"
+        wallet: '9WXdkS8Tq18PY2GoJy4Tq8d9HdzojyyCtbFg4QrQxJSk',
       })
       .then(() => {
         console.log('Social Data Added');
@@ -670,25 +670,43 @@ export default function Ting() {
 
   const takePhotoFromCamera = () => {
     ImagePicker.openCamera({
-      width : 300,
-      height : 400,
-      cropping : true
+      width: 300,
+      height: 400,
+      cropping: true,
     }).then(image => {
-      console.log(image.path)
-      setImage(image.path)
-    })
-  }
+      console.log(image.path);
+      setImage(image.path);
+    });
+  };
 
   const choosePhotoFromLibrary = () => {
     ImagePicker.openPicker({
-      width : 300,
-      height : 400,
-      cropping : true
+      width: 300,
+      height: 400,
+      cropping: true,
     }).then(image => {
-      console.log(image.path)
-      setImage(image.path)
-    })
-  }
+      console.log(image.path);
+      setImage(image.path);
+      uploadImage(image.path);
+    });
+  };
+
+  const uploadImage = async (image: string) => {
+    try {
+      const reference = storage().ref(image);
+      const pathToFile = image;
+
+      const data = await reference.putFile(pathToFile);
+      console.log(data);
+
+      const url = await storage().ref(image).getDownloadURL();
+      console.log(url);
+
+      // setDownloadUrl(url);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -1085,27 +1103,26 @@ export default function Ting() {
                   <View style={styles.header}>
                     <Text style={styles.textForBottomSheet}>Select Image</Text>
                   </View>
-                  <TouchableOpacity onPress={()=>choosePhotoFromLibrary()}>
-                  <View style={styles.header}>
-                    {image ? (
-                      <>
-                      <Image
-                      source={{
-                        uri : image
-                      }}
-                      style={newStyle.logoPointerForMomento}
-                    />
-                      </>
-                    ):(
-                      <>
-                      <Image
-                      source={require("../img/image.png")}
-                      style={newStyle.logoPointerForMomento}
-                    />
-                      </>
-                    )}
-                    
-                  </View>
+                  <TouchableOpacity onPress={() => choosePhotoFromLibrary()}>
+                    <View style={styles.header}>
+                      {image ? (
+                        <>
+                          <Image
+                            source={{
+                              uri: image,
+                            }}
+                            style={newStyle.logoPointerForMomento}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <Image
+                            source={require('../img/image.png')}
+                            style={newStyle.logoPointerForMomento}
+                          />
+                        </>
+                      )}
+                    </View>
                   </TouchableOpacity>
                 </>
               </View>
@@ -1200,9 +1217,10 @@ export default function Ting() {
                 <TouchableOpacity onPress={() => mintCNFT('momento', true)}>
                   {loading ? (
                     <>
-                      <View style={{
-                        marginBottom : 10
-                      }}>
+                      <View
+                        style={{
+                          marginBottom: 10,
+                        }}>
                         <ActivityIndicator size="small" color="white" />
                       </View>
                     </>
