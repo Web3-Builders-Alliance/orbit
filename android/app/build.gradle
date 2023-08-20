@@ -102,6 +102,7 @@ android {
 
     namespace "com.reactnativetemplate"
     defaultConfig {
+        vectorDrawables.useSupportLibrary = true
         applicationId "com.reactnativetemplate"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion

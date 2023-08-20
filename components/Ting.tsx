@@ -32,6 +32,8 @@ import firestore from '@react-native-firebase/firestore';
 import {TouchableOpacity} from 'react-native';
 import DisconnectButton from './DisconnectButton';
 import Geoloaction from 'react-native-geolocation-service';
+import ImagePicker from 'react-native-image-crop-picker'
+import storage from '@react-native-firebase/storage';
 import * as bs58 from 'bs58';
 
 export default function Ting() {
@@ -46,6 +48,9 @@ export default function Ting() {
   const [openMomentoBottomSheet, setOpenMomentoBottomSheet] = useState(false);
   const [openSocialBottomSheet, setOpenSocialBottomSheet] = useState(false);
   const [openHostBottomSheet, setopenHostBottomSheet] = useState(false);
+
+  const [image , setImage] = useState(null)
+  const [uploading , setUploading] = useState(false)
 
   const [displayMomentoBottomSheet, setDisplayMomentoBottomSheet] =
     useState(false);
@@ -157,6 +162,7 @@ export default function Ting() {
   const closeBottomSheet = () => {
     setBottomSheetVisible(false);
   };
+  
 
   const openBottomSheetMarker = () => {
     setBottomSheetMarker(true);
@@ -662,6 +668,28 @@ export default function Ting() {
     setLng(Lng);
   };
 
+  const takePhotoFromCamera = () => {
+    ImagePicker.openCamera({
+      width : 300,
+      height : 400,
+      cropping : true
+    }).then(image => {
+      console.log(image.path)
+      setImage(image.path)
+    })
+  }
+
+  const choosePhotoFromLibrary = () => {
+    ImagePicker.openPicker({
+      width : 300,
+      height : 400,
+      cropping : true
+    }).then(image => {
+      console.log(image.path)
+      setImage(image.path)
+    })
+  }
+
   return (
     <>
       <SafeAreaView>
@@ -1057,14 +1085,31 @@ export default function Ting() {
                   <View style={styles.header}>
                     <Text style={styles.textForBottomSheet}>Select Image</Text>
                   </View>
+                  <TouchableOpacity onPress={()=>choosePhotoFromLibrary()}>
                   <View style={styles.header}>
-                    <Image
-                      source={require('../img/image.png')}
+                    {image ? (
+                      <>
+                      <Image
+                      source={{
+                        uri : image
+                      }}
                       style={newStyle.logoPointerForMomento}
                     />
+                      </>
+                    ):(
+                      <>
+                      <Image
+                      source={require("../img/image.png")}
+                      style={newStyle.logoPointerForMomento}
+                    />
+                      </>
+                    )}
+                    
                   </View>
+                  </TouchableOpacity>
                 </>
               </View>
+
               <View style={newStyle.mainapp}>
                 <View style={styles.header}>
                   <Text style={styles.textForBottomSheet}>Location</Text>
