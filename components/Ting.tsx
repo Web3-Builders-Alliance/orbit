@@ -126,7 +126,6 @@ export default function Ting() {
     setTime_for_event(e);
   };
 
-
   useEffect(() => {
     getData();
     requestCameraPermission();
@@ -1301,12 +1300,27 @@ export default function Ting() {
                   <View style={styles.header}>
                     <Text style={styles.textForBottomSheet}>Select Image</Text>
                   </View>
-                  <View style={styles.header}>
-                    <Image
-                      source={require('../img/image.png')}
-                      style={newStyle.logoPointerForMomento}
-                    />
-                  </View>
+                  <TouchableOpacity onPress={() => choosePhotoFromLibrary()}>
+                    <View style={styles.header}>
+                      {image ? (
+                        <>
+                          <Image
+                            source={{
+                              uri: image,
+                            }}
+                            style={newStyle.logoPointerForMomento}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <Image
+                            source={require('../img/image.png')}
+                            style={newStyle.logoPointerForMomento}
+                          />
+                        </>
+                      )}
+                    </View>
+                  </TouchableOpacity>
                 </>
               </View>
               <View style={newStyle.mainapp}>
@@ -1430,12 +1444,27 @@ export default function Ting() {
                       Select Event Image
                     </Text>
                   </View>
-                  <View style={styles.header}>
-                    <Image
-                      source={require('../img/image.png')}
-                      style={newStyle.logoPointerForMomento}
-                    />
-                  </View>
+                  <TouchableOpacity onPress={() => choosePhotoFromLibrary()}>
+                    <View style={styles.header}>
+                      {image ? (
+                        <>
+                          <Image
+                            source={{
+                              uri: image,
+                            }}
+                            style={newStyle.logoPointerForMomento}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <Image
+                            source={require('../img/image.png')}
+                            style={newStyle.logoPointerForMomento}
+                          />
+                        </>
+                      )}
+                    </View>
+                  </TouchableOpacity>
                 </>
               </View>
               <View style={newStyle.mainapp}>
@@ -1727,7 +1756,7 @@ export default function Ting() {
                     return (
                       <>
                         <Marker
-                        key={item.id}
+                          key={item.id}
                           onPress={() => ching(item.Lat, item.Lat)}
                           coordinate={{
                             latitude: item.Lat,
@@ -1746,7 +1775,7 @@ export default function Ting() {
                     return (
                       <>
                         <Marker
-                        key={item.id}
+                          key={item.id}
                           onPress={() => ching(item.Lat, item.Lat)}
                           coordinate={{
                             latitude: item.Lat,
@@ -1766,7 +1795,7 @@ export default function Ting() {
                   return (
                     <>
                       <Marker
-                      key={item.id}
+                        key={item.id}
                         onPress={() =>
                           getDataForBottomSheet(item.Lat, item.Lat)
                         }
@@ -1787,7 +1816,7 @@ export default function Ting() {
                   return (
                     <>
                       <Marker
-                      key={item.id}
+                        key={item.id}
                         onPress={() =>
                           getDataForMomentoBottomSheet(item.Lat, item.Lat)
                         }
@@ -1808,7 +1837,7 @@ export default function Ting() {
                   return (
                     <>
                       <Marker
-                      key={item.id}
+                        key={item.id}
                         onPress={() =>
                           getDataForSocialBottomSheet(item.Lat, item.Lat)
                         }
