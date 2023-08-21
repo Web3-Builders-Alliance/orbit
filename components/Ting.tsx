@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useCallback, useState, useEffect} from 'react';
 import {
   Image,
   Pressable,
@@ -21,6 +21,7 @@ import {
   Transaction,
   Connection,
   Commitment,
+  PublicKey,
 } from '@solana/web3.js';
 import {
   bundlrStorage,
@@ -31,6 +32,11 @@ import {
   JsonMetadata,
   CreateSftInput,
 } from '@metaplex-foundation/js';
+import {
+  useAuthorization,
+  Account,
+} from '../components/providers/AuthorizationProvider';
+import {useConnection} from '../components/providers/ConnectionProvider';
 import wallet from '../wallet/wallet';
 import {Switch} from 'react-native-paper';
 import {BsFillPersonFill} from 'react-icons/bs';
@@ -46,6 +52,8 @@ import storage from '@react-native-firebase/storage';
 import * as bs58 from 'bs58';
 
 export default function Ting() {
+  const {connection} = useConnection();
+  const {selectedAccount} = useAuthorization();
   const [shyft, setShyft] = useState([]);
   const [switchOn, setSwitchOn] = useState(false);
   const [switchOn1, setSwitchOn1] = useState(false);
@@ -77,8 +85,6 @@ export default function Ting() {
 
   const [loading, setLoading] = useState(false);
   const [transferLoading, settransferLoading] = useState(false);
-
-  const [type, setType] = useState('event');
 
   const [eventName, setEventName] = useState('');
   const [eventDesc, setEventDesc] = useState('');
@@ -119,6 +125,7 @@ export default function Ting() {
   const timeHandlerForTime = (e: any) => {
     setTime_for_event(e);
   };
+
 
   useEffect(() => {
     getData();
@@ -384,7 +391,7 @@ export default function Ting() {
     tree: string,
     type: string,
     transfer: boolean,
-    metadata : string
+    metadata: string,
   ) => {
     try {
       const connection = new Connection(clusterApiUrl('devnet'), 'finalized');
@@ -399,7 +406,7 @@ export default function Ting() {
       console.log('txSig from 1-' + txnSignature);
       console.log('Tree from 1-' + tree);
       setTimeout(() => {
-        finalCFTMint(tree, type, transfer , metadata);
+        finalCFTMint(tree, type, transfer, metadata);
       }, 500);
     } catch (error) {
       console.log(error);
@@ -511,7 +518,7 @@ export default function Ting() {
     }
   };
 
-  const mintCNFT = (type: string, transfer: boolean , metadata : string) => {
+  const mintCNFT = (type: string, transfer: boolean, metadata: string) => {
     setLoading(true);
     var myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
@@ -546,13 +553,18 @@ export default function Ting() {
           result.result.tree,
           type,
           transfer,
-          metadata
+          metadata,
         ),
       )
       .catch(error => console.log('error', error));
   };
 
-  const finalCFTMint = (tree: string, type: string, transfer: boolean , metadata : string) => {
+  const finalCFTMint = (
+    tree: string,
+    type: string,
+    transfer: boolean,
+    metadata: string,
+  ) => {
     var myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
     myHeaders.append('x-api-key', 'HI_eHFd0SX8ykSDW');
@@ -560,8 +572,7 @@ export default function Ting() {
     var raw = JSON.stringify({
       network: 'devnet',
       creator_wallet: '2JSg1MdNqRg9z4RP7yiE2NV86fux2BNtF3pSDjhoi767',
-      metadata_uri:
-        metadata,
+      metadata_uri: metadata,
       merkle_tree: tree,
       max_supply: 1,
       is_mutable: true,
@@ -1225,7 +1236,14 @@ export default function Ting() {
                     }}
                   />
                 </View>
-                <TouchableOpacity onPress={() => mintCNFT('momento', true,"https://zn6kci2g7vgxltorxyntlc6x2rzbqx6bw7jjlzxw3h2khtw7k6ka.arweave.net/y3yhI0b9TXXN0b4bNYvX1HIYX8G30pXm9tn0o87fV5Q")}>
+                <TouchableOpacity
+                  onPress={() =>
+                    mintCNFT(
+                      'momento',
+                      true,
+                      'https://zn6kci2g7vgxltorxyntlc6x2rzbqx6bw7jjlzxw3h2khtw7k6ka.arweave.net/y3yhI0b9TXXN0b4bNYvX1HIYX8G30pXm9tn0o87fV5Q',
+                    )
+                  }>
                   {loading ? (
                     <>
                       <View
@@ -1345,7 +1363,14 @@ export default function Ting() {
                   placeholder="Momento Description"
                   keyboardType="email-address"
                 />
-                <TouchableOpacity onPress={() => mintCNFT('social', true , "https://kdpbrvc34pzksbyezxs4cuq45juqzza2vttfpr33ah4xid5g6ozq.arweave.net/UN4Y1Fvj8qkHBM3lwVIc6mkM5Bqs5lfHewH5dA-m87M")}>
+                <TouchableOpacity
+                  onPress={() =>
+                    mintCNFT(
+                      'social',
+                      true,
+                      'https://kdpbrvc34pzksbyezxs4cuq45juqzza2vttfpr33ah4xid5g6ozq.arweave.net/UN4Y1Fvj8qkHBM3lwVIc6mkM5Bqs5lfHewH5dA-m87M',
+                    )
+                  }>
                   {loading ? (
                     <>
                       <View
@@ -1473,7 +1498,14 @@ export default function Ting() {
                   onChangeText={timeHandlerForTime}
                   placeholder="Time"
                 />
-                <TouchableOpacity onPress={() => mintCNFT('event', false,"https://zwgnkp42wmmlnt23rcb5tfu67nkle5cffcgcufwot7yun2owmuta.arweave.net/zYzVP5qzGLbPW4iD2Zae-1SydEUojCoWzp_xRunWZSY")}>
+                <TouchableOpacity
+                  onPress={() =>
+                    mintCNFT(
+                      'event',
+                      false,
+                      'https://zwgnkp42wmmlnt23rcb5tfu67nkle5cffcgcufwot7yun2owmuta.arweave.net/zYzVP5qzGLbPW4iD2Zae-1SydEUojCoWzp_xRunWZSY',
+                    )
+                  }>
                   {loading ? (
                     <>
                       <View
@@ -1524,7 +1556,7 @@ export default function Ting() {
               },
             ]}>
             <View style={{flex: 6}}>
-              <Text style={styles.text}>Gm User , its Orbit</Text>
+              <Text style={styles.text}>gm its Orbit World</Text>
             </View>
             <View style={{flex: 1.5}}>
               <Image
@@ -1560,7 +1592,7 @@ export default function Ting() {
                 <View style={{flex: 1.5}}>
                   <Image
                     source={{
-                      uri: 'https://picsum.photos/200',
+                      uri: 'https://gravatar.com/avatar/f707eb93f8fc5681d55b915b1f462aae?s=400&d=retro&r=x',
                     }}
                     style={styles.logoim}
                   />
@@ -1580,7 +1612,7 @@ export default function Ting() {
               <View style={{flex: 1.5}}>
                 <Image
                   source={{
-                    uri: 'https://picsum.photos/202',
+                    uri: 'https://robohash.org/6cee5101410f512bf1a63d60dab748ee?set=set4&bgset=&size=400x400',
                   }}
                   style={styles.logoim}
                 />
@@ -1599,7 +1631,7 @@ export default function Ting() {
               <View style={{flex: 1.5}}>
                 <Image
                   source={{
-                    uri: 'https://picsum.photos/203',
+                    uri: 'https://gravatar.com/avatar/4e7a9c5bb11212ac09ff79e029535eb2?s=400&d=robohash&r=x',
                   }}
                   style={styles.logoim}
                 />
@@ -1618,7 +1650,7 @@ export default function Ting() {
               <View style={{flex: 1.5}}>
                 <Image
                   source={{
-                    uri: 'https://picsum.photos/204',
+                    uri: 'https://gravatar.com/avatar/c750af724dec0f193f2d053bd51b70a9?s=400&d=robohash&r=x',
                   }}
                   style={styles.logoim}
                 />
@@ -1637,7 +1669,7 @@ export default function Ting() {
               <View style={{flex: 1.5}}>
                 <Image
                   source={{
-                    uri: 'https://picsum.photos/204',
+                    uri: 'https://gravatar.com/avatar/f707eb93f8fc5681d55b915b1f462aae?s=400&d=robohash&r=x',
                   }}
                   style={styles.logoim}
                 />
@@ -1695,6 +1727,7 @@ export default function Ting() {
                     return (
                       <>
                         <Marker
+                        key={item.id}
                           onPress={() => ching(item.Lat, item.Lat)}
                           coordinate={{
                             latitude: item.Lat,
@@ -1713,6 +1746,7 @@ export default function Ting() {
                     return (
                       <>
                         <Marker
+                        key={item.id}
                           onPress={() => ching(item.Lat, item.Lat)}
                           coordinate={{
                             latitude: item.Lat,
@@ -1732,6 +1766,7 @@ export default function Ting() {
                   return (
                     <>
                       <Marker
+                      key={item.id}
                         onPress={() =>
                           getDataForBottomSheet(item.Lat, item.Lat)
                         }
@@ -1752,6 +1787,7 @@ export default function Ting() {
                   return (
                     <>
                       <Marker
+                      key={item.id}
                         onPress={() =>
                           getDataForMomentoBottomSheet(item.Lat, item.Lat)
                         }
@@ -1772,6 +1808,7 @@ export default function Ting() {
                   return (
                     <>
                       <Marker
+                      key={item.id}
                         onPress={() =>
                           getDataForSocialBottomSheet(item.Lat, item.Lat)
                         }
