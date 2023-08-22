@@ -1367,14 +1367,14 @@ export default function Ting() {
                   style={inputForm.input}
                   value={socialName}
                   onChangeText={socialNameHandler}
-                  placeholder="Your Momento Name"
+                  placeholder="Name"
                 />
                 <Text style={inputForm.label}>Description</Text>
                 <TextInput
                   style={inputForm.input}
                   value={socialDesc}
                   onChangeText={socialDescHandler}
-                  placeholder="Momento Description"
+                  placeholder="Description"
                   keyboardType="email-address"
                 />
                 <TouchableOpacity
