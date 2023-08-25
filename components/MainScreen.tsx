@@ -51,7 +51,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import storage from '@react-native-firebase/storage';
 import * as bs58 from 'bs58';
 
-export default function MainScreen() {
+export default function FullMainScreen() {
   const {connection} = useConnection();
   const {selectedAccount} = useAuthorization();
   const [shyft, setShyft] = useState([]);
