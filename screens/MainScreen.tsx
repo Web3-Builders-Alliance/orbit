@@ -95,17 +95,8 @@ export default function MainScreen() {
           {selectedAccount ? (
             <>
               <SafeAreaView>
-                <ScrollView style={styles.scroolView}>
-                  {/* <Section title="Account Info">
-                <AccountInfo
-                  selectedAccount={selectedAccount}
-                  balance={balance}
-                />
-                /> */}
+                <ScrollView style={styles.scroolView}>     
                   <FullMainScreen />
-
-                  {/* <CallInstructionsFrontEnd/> */}
-                  {/* </Section> */}
                 </ScrollView>
               </SafeAreaView>
             </>
