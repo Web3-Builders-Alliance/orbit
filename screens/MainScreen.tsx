@@ -23,8 +23,7 @@ import DisconnectButton from '../components/DisconnectButton';
 import {Dimensions} from 'react-native';
 const {width, height} = Dimensions.get('screen');
 import RequestAirdropButton from '../components/RequestAirdropButton';
-import CallInstructionsFrontEnd from '../components/CallInstructionsFrontEnd';
-import Ting from '../components/Ting';
+import Ting from '../components/MainScreen';
 export default function MainScreen() {
   const {connection} = useConnection();
   const {selectedAccount} = useAuthorization();
@@ -103,7 +102,7 @@ export default function MainScreen() {
                   balance={balance}
                 />
                 /> */}
-                  <Ting />
+                  <MainScreen />
 
                   {/* <CallInstructionsFrontEnd/> */}
                   {/* </Section> */}

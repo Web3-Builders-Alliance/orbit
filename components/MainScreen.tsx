@@ -35,8 +35,8 @@ import {
 import {
   useAuthorization,
   Account,
-} from '../components/providers/AuthorizationProvider';
-import {useConnection} from '../components/providers/ConnectionProvider';
+} from './providers/AuthorizationProvider';
+import {useConnection} from './providers/ConnectionProvider';
 import wallet from '../wallet/wallet';
 import {Switch} from 'react-native-paper';
 import {BsFillPersonFill} from 'react-icons/bs';
@@ -51,7 +51,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import storage from '@react-native-firebase/storage';
 import * as bs58 from 'bs58';
 
-export default function Ting() {
+export default function MainScreen() {
   const {connection} = useConnection();
   const {selectedAccount} = useAuthorization();
   const [shyft, setShyft] = useState([]);
