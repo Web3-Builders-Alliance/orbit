@@ -32,10 +32,7 @@ import {
   JsonMetadata,
   CreateSftInput,
 } from '@metaplex-foundation/js';
-import {
-  useAuthorization,
-  Account,
-} from './providers/AuthorizationProvider';
+import {useAuthorization, Account} from './providers/AuthorizationProvider';
 import {useConnection} from './providers/ConnectionProvider';
 import wallet from '../wallet/wallet';
 import {Switch} from 'react-native-paper';
@@ -127,12 +124,12 @@ export default function FullMainScreen() {
   };
 
   useEffect(() => {
-    getData();
+    //getData();
     requestCameraPermission();
   }, []);
 
   useEffect(() => {
-    allAllNFTs(address);
+    //allAllNFTs(address);
   }, [address]);
 
   const requestCameraPermission = async () => {
@@ -1596,9 +1593,9 @@ export default function FullMainScreen() {
               />
             </View>
           </View>
-          <View style={styles.header}>
+          {/* <View style={styles.header}>
             <Text style={styles.text}>Friends</Text>
-          </View>
+          </View> */}
 
           <View
             style={{
@@ -1630,6 +1627,25 @@ export default function FullMainScreen() {
                   <Text style={{marginLeft: 20, marginTop: 10}}>Sarah</Text>
                 </View>
               </TouchableOpacity>
+            </View>
+            <View
+              style={[
+                styles.container,
+                {
+                  flexDirection: 'column',
+                },
+              ]}>
+              <View style={{flex: 1.5}}>
+                <Image
+                  source={{
+                    uri: 'https://robohash.org/6cee5101410f512bf1a63d60dab748ee?set=set4&bgset=&size=400x400',
+                  }}
+                  style={styles.logoim}
+                />
+              </View>
+              <View style={{flex: 6}}>
+                <Text style={{marginLeft: 20, marginTop: 10}}>James</Text>
+              </View>
             </View>
             <View
               style={[
@@ -1708,7 +1724,9 @@ export default function FullMainScreen() {
               </View>
             </View>
           </View>
+          <View style={styles.dailyContainer}>
 
+          </View>
           <View style={bottomstyles.container}>
             <View style={styles.discoverHeading}>
               <Text style={styles.text}>Discover</Text>
@@ -1857,7 +1875,74 @@ export default function FullMainScreen() {
               })}
             </MapView>
           </View>
-          <View style={bottomstyles.container}>
+          <View style={styles.iconContainer}>
+            <View style={iconsDiv.container}>
+             
+              <Image
+                style={iconsDiv.avatar}
+                source={{uri: 'https://picsum.photos/200'}}
+              />
+              <Image
+                style={iconsDiv.avatar}
+                source={{uri: 'https://picsum.photos/200'}}
+              />
+              <Image
+                style={iconsDiv.avatar}
+                source={{uri: 'https://picsum.photos/200'}}
+              />
+              <Image
+                style={iconsDiv.avatar}
+                source={{uri: 'https://picsum.photos/200'}}
+              />
+              <Image
+                style={iconsDiv.avatar}
+                source={{uri: 'https://picsum.photos/200'}}
+              />
+              <Image
+                style={iconsDiv.avatar}
+                source={{uri: 'https://picsum.photos/200'}}
+              />
+            </View>
+          </View>
+
+          <View style={styles.iconContainer}>
+            <View style={iconsDiv.container}>
+              <Image
+                style={iconsDiv.avatar}
+                source={{uri: 'https://picsum.photos/200'}}
+              />
+              <Image
+                style={iconsDiv.avatar}
+                source={{uri: 'https://picsum.photos/200'}}
+              />
+              <Image
+                style={iconsDiv.avatar}
+                source={{uri: 'https://picsum.photos/200'}}
+              />
+              <Image
+                style={iconsDiv.avatar}
+                source={{uri: 'https://picsum.photos/200'}}
+              />
+              <Image
+                style={iconsDiv.avatar}
+                source={{uri: 'https://picsum.photos/200'}}
+              />
+              <Image
+                style={iconsDiv.avatar}
+                source={{uri: 'https://picsum.photos/200'}}
+              />
+              <Image
+                style={iconsDiv.avatar}
+                source={{uri: 'https://picsum.photos/200'}}
+              />
+            </View>
+
+            {/* <Image
+              
+              src="https://picsum.photos/201"
+              alt="Rounded avatar"></Image> */}
+          </View>
+          {/* <View style={bottomstyles.container}>
             <View style={bottomstyles.buttonContainer}>
               <TouchableOpacity onPress={OpenHostBottomSheet}>
                 <View
@@ -1895,9 +1980,9 @@ export default function FullMainScreen() {
                 </View>
               </TouchableOpacity>
             </View>
-          </View>
+          </View> */}
 
-          <View style={bottomstyles.container}>
+          {/* <View style={bottomstyles.container}>
             <View style={bottomstyles.buttonContainer}>
               <TouchableOpacity onPress={OpenSocialBottomSheet}>
                 <View
@@ -1917,7 +2002,7 @@ export default function FullMainScreen() {
             </View>
 
             <DisconnectButton title="Disconnect Button" />
-          </View>
+          </View> */}
         </View>
       </SafeAreaView>
     </>
@@ -2019,8 +2104,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   discoverHeading: {
-    padding: 1,
-    marginTop: 20,
+    
   },
   title: {
     fontWeight: 'bold',
@@ -2030,8 +2114,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontWeight: 'bold',
-    lineHeight: 30,
-    fontSize: 26,
+    fontSize: 22,
     textAlign: 'left',
     color: 'white',
   },
@@ -2064,8 +2147,8 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   logoim: {
-    width: 65,
-    height: 65,
+    width: 40,
+    height: 40,
     marginLeft: 10,
     borderRadius: 50,
   },
@@ -2076,7 +2159,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   reloadmarkerlogoim: {
-    marginTop: 20,
+    marginTop: 2,
     marginLeft: 10,
     borderRadius: 50,
   },
@@ -2099,7 +2182,7 @@ const styles = StyleSheet.create({
     borderRadius: 200,
   },
   mapcontainer: {
-    height: 300,
+    height:200,
     marginTop: 20,
     alignItems: 'center',
     justifyContent: 'flex-end',
@@ -2113,6 +2196,48 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     borderRadius: 50,
     overflow: 'hidden',
+  },
+  iconContainer: {
+    flex: 1,
+    width: 350,
+    height: 70,
+    padding: 0,
+    backgroundColor: '#333', // Use the desired background color
+    marginBottom: 10,
+    marginTop: 20,
+    marginLeft: 20,
+    borderRadius: 20,
+  },
+  dailyContainer: {
+    flex: 1,
+    width: 350,
+    height: 100,
+    padding: 0,
+    backgroundColor: 'white', // Use the desired background color
+    marginBottom: 10,
+    marginTop: 20,
+    marginLeft: 20,
+    borderRadius: 20,
+  },
+});
+
+const iconsDiv = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  icon: {
+    fontSize: 40, // Adjust the size as needed
+  },
+  avatar: {
+    padding : 15,
+    alignItems : "center",
+    width: 30,
+    height: 20,
+    marginLeft: 25,
+    borderRadius: 50,
+    marginBottom : 5
   },
 });
 
