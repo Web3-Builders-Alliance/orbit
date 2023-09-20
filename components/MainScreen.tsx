@@ -14,7 +14,7 @@ import {
   Alert,
   Linking,
   ActivityIndicator,
-  Slider
+  Slider,
 } from 'react-native';
 import {
   clusterApiUrl,
@@ -47,6 +47,7 @@ import DisconnectButton from './DisconnectButton';
 import Geoloaction from 'react-native-geolocation-service';
 import ImagePicker from 'react-native-image-crop-picker';
 import storage from '@react-native-firebase/storage';
+import {BiRadioCircle} from 'react-icons/bi';
 
 import * as bs58 from 'bs58';
 
@@ -1640,7 +1641,7 @@ export default function FullMainScreen() {
               <View style={{flex: 1.5}}>
                 <Image
                   source={{
-                    uri: 'https://robohash.org/6cee5101410f512bf1a63d60dab748ee?set=set4&bgset=&size=400x400',
+                    uri: 'https://picsum.photos/203',
                   }}
                   style={styles.logoim}
                 />
@@ -1728,21 +1729,37 @@ export default function FullMainScreen() {
           </View>
           <View style={styles.dailyContainer}>
             <View>
-              <Image
-                style={iconConatiner.imagev}
-                source={require('../img/chest2.png')}></Image>
+              <View style={styles.discoverHeading}>
+                <Text style={styles.textChall}>Challenges</Text>
+              </View>
             </View>
 
-            <View style={slider.container}>
-              <Slider
-                style={slider.slider}
-                minimumValue={0}
-                maximumValue={1}
-              
-              />
-              
+            <View style={Challenges.container}>
+              <View style={hcircle.circle} />
+              <Text style={Challenges.text}>
+                This is some text next to the image.
+              </Text>
             </View>
+
+            <View style={Challenges.container}>
+              <View style={hcircle.circle} />
+              <Text style={Challenges.text}>
+                This is some text next to the image.
+              </Text>
+            </View>
+
+            <View style={Challenges.container}>
+              <View style={hcircle.circle} />
+              <Text style={Challenges.text}>
+                This is some text next to the image.
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={Challenges.appButtonContainer}>
+              <Text style={Challenges.appButtonText}>Claim 5 ORB</Text>
+            </TouchableOpacity>
           </View>
+
           <View style={bottomstyles.container}>
             <View style={styles.discoverHeading}>
               <Text style={styles.text}>Discover</Text>
@@ -2103,6 +2120,14 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     color: 'white',
   },
+  textChall: {
+    fontWeight: 'bold',
+    fontSize: 22,
+    textAlign: 'left',
+    color: 'white',
+    marginTop: 5,
+    marginLeft: 10,
+  },
   textForBottomSheet: {
     fontWeight: 'bold',
     lineHeight: 30,
@@ -2206,18 +2231,16 @@ const styles = StyleSheet.create({
   },
 });
 
-const slider = StyleSheet.create({
-  container: {
-    
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  slider: {
-    width: '80%',
-  },
-  progressText: {
-    fontSize: 18,
-    marginTop: 20,
+const hcircle = StyleSheet.create({
+  circle: {
+    width: 15, // Adjust the width as needed to make it smaller or larger
+    height: 15, // Adjust the height to match the width for a perfect circle
+    borderRadius: 25, // Half of the width or height to create a circle
+    borderColor: 'white', // Border color (white in this case)
+    borderWidth: 2,
+    marginTop: 2,
+    marginLeft: 10,
+    // Border width (adjust as needed)
   },
 });
 
@@ -2251,23 +2274,41 @@ const iconConatiner = StyleSheet.create({
   },
 });
 
-const iconsDiv = StyleSheet.create({
+const Challenges = StyleSheet.create({
   container: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: 'row', // Align items horizontally
+    alignItems: 'center', // Vertically center items
+    padding: 2,
+    marginTop: 5,
   },
-  icon: {
-    fontSize: 40, // Adjust the size as needed
+  image: {
+    width: 80, // Adjust the width as needed
+    height: 80, // Adjust the height as needed
+    marginRight: 16, // Spacing between the image and text
+    resizeMode: 'cover', // Adjust the resizeMode as needed
   },
-  avatar: {
-    padding: 15,
-    alignItems: 'center',
-    width: 30,
-    height: 20,
-    marginLeft: 25,
-    borderRadius: 50,
-    marginBottom: 5,
+  text: {
+    flex: 1, // Take up remaining space
+    fontSize: 16,
+    marginLeft: 10,
+    color: 'white',
+    // You can add more styling properties as needed
+  },
+  appButtonContainer: {
+    elevation: 8,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    paddingVertical: 5,
+    paddingHorizontal: 5,
+    marginLeft : 16,
+    marginRight : 16,
+    marginTop : 10
+  },
+  appButtonText: {
+    fontSize: 18,
+    color: 'black',
+    alignSelf: 'center',
+    textTransform: 'uppercase',
   },
 });
 
