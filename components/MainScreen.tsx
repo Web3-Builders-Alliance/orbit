@@ -14,6 +14,7 @@ import {
   Alert,
   Linking,
   ActivityIndicator,
+  Slider
 } from 'react-native';
 import {
   clusterApiUrl,
@@ -23,15 +24,15 @@ import {
   Commitment,
   PublicKey,
 } from '@solana/web3.js';
-import {
-  bundlrStorage,
-  keypairIdentity,
-  Metaplex,
-  CreatorInput,
-  KeypairSigner,
-  JsonMetadata,
-  CreateSftInput,
-} from '@metaplex-foundation/js';
+// import {
+//   bundlrStorage,
+//   keypairIdentity,
+//   Metaplex,
+//   CreatorInput,
+//   KeypairSigner,
+//   JsonMetadata,
+//   CreateSftInput,
+// } from '@metaplex-foundation/js';
 import {useAuthorization, Account} from './providers/AuthorizationProvider';
 import {useConnection} from './providers/ConnectionProvider';
 import wallet from '../wallet/wallet';
@@ -46,6 +47,7 @@ import DisconnectButton from './DisconnectButton';
 import Geoloaction from 'react-native-geolocation-service';
 import ImagePicker from 'react-native-image-crop-picker';
 import storage from '@react-native-firebase/storage';
+
 import * as bs58 from 'bs58';
 
 export default function FullMainScreen() {
@@ -1725,7 +1727,21 @@ export default function FullMainScreen() {
             </View>
           </View>
           <View style={styles.dailyContainer}>
+            <View>
+              <Image
+                style={iconConatiner.imagev}
+                source={require('../img/chest2.png')}></Image>
+            </View>
 
+            <View style={slider.container}>
+              <Slider
+                style={slider.slider}
+                minimumValue={0}
+                maximumValue={1}
+              
+              />
+              
+            </View>
           </View>
           <View style={bottomstyles.container}>
             <View style={styles.discoverHeading}>
@@ -1735,7 +1751,7 @@ export default function FullMainScreen() {
               <>
                 <View
                   style={{
-                    marginTop: 30,
+                    marginTop: 12,
                     marginLeft: 10,
                   }}>
                   <ActivityIndicator size={'small'} color="white" />
@@ -1875,73 +1891,44 @@ export default function FullMainScreen() {
               })}
             </MapView>
           </View>
-          <View style={styles.iconContainer}>
-            <View style={iconsDiv.container}>
-             
+
+          <View style={iconConatiner.container}>
+            <View style={iconConatiner.row}>
               <Image
-                style={iconsDiv.avatar}
-                source={{uri: 'https://picsum.photos/200'}}
+                style={iconConatiner.image}
+                source={require('../img/wooman.png')}
               />
               <Image
-                style={iconsDiv.avatar}
-                source={{uri: 'https://picsum.photos/200'}}
+                style={iconConatiner.image}
+                source={require('../img/man.png')}
               />
               <Image
-                style={iconsDiv.avatar}
-                source={{uri: 'https://picsum.photos/200'}}
+                style={iconConatiner.image}
+                source={require('../img/landmark.png')}
               />
               <Image
-                style={iconsDiv.avatar}
-                source={{uri: 'https://picsum.photos/200'}}
+                style={iconConatiner.image}
+                source={require('../img/warning.png')}
               />
               <Image
-                style={iconsDiv.avatar}
-                source={{uri: 'https://picsum.photos/200'}}
+                style={iconConatiner.image}
+                source={require('../img/car.png')}
               />
               <Image
-                style={iconsDiv.avatar}
-                source={{uri: 'https://picsum.photos/200'}}
+                style={iconConatiner.image}
+                source={require('../img/q.png')}
+              />
+              <Image
+                style={iconConatiner.image}
+                source={require('../img/help.png')}
+              />
+              <Image
+                style={iconConatiner.image}
+                source={require('../img/shop.png')}
               />
             </View>
           </View>
 
-          <View style={styles.iconContainer}>
-            <View style={iconsDiv.container}>
-              <Image
-                style={iconsDiv.avatar}
-                source={{uri: 'https://picsum.photos/200'}}
-              />
-              <Image
-                style={iconsDiv.avatar}
-                source={{uri: 'https://picsum.photos/200'}}
-              />
-              <Image
-                style={iconsDiv.avatar}
-                source={{uri: 'https://picsum.photos/200'}}
-              />
-              <Image
-                style={iconsDiv.avatar}
-                source={{uri: 'https://picsum.photos/200'}}
-              />
-              <Image
-                style={iconsDiv.avatar}
-                source={{uri: 'https://picsum.photos/200'}}
-              />
-              <Image
-                style={iconsDiv.avatar}
-                source={{uri: 'https://picsum.photos/200'}}
-              />
-              <Image
-                style={iconsDiv.avatar}
-                source={{uri: 'https://picsum.photos/200'}}
-              />
-            </View>
-
-            {/* <Image
-              
-              src="https://picsum.photos/201"
-              alt="Rounded avatar"></Image> */}
-          </View>
           {/* <View style={bottomstyles.container}>
             <View style={bottomstyles.buttonContainer}>
               <TouchableOpacity onPress={OpenHostBottomSheet}>
@@ -2103,9 +2090,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     alignItems: 'center',
   },
-  discoverHeading: {
-    
-  },
+  discoverHeading: {},
   title: {
     fontWeight: 'bold',
     fontSize: 40,
@@ -2182,7 +2167,7 @@ const styles = StyleSheet.create({
     borderRadius: 200,
   },
   mapcontainer: {
-    height:200,
+    height: 200,
     marginTop: 20,
     alignItems: 'center',
     justifyContent: 'flex-end',
@@ -2211,13 +2196,58 @@ const styles = StyleSheet.create({
   dailyContainer: {
     flex: 1,
     width: 350,
-    height: 100,
+    height: 200,
     padding: 0,
-    backgroundColor: 'white', // Use the desired background color
+    backgroundColor: '#333', // Use the desired background color
     marginBottom: 10,
     marginTop: 20,
     marginLeft: 20,
     borderRadius: 20,
+  },
+});
+
+const slider = StyleSheet.create({
+  container: {
+    
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  slider: {
+    width: '80%',
+  },
+  progressText: {
+    fontSize: 18,
+    marginTop: 20,
+  },
+});
+
+const iconConatiner = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+    padding: 12,
+    backgroundColor: '#333',
+    marginTop: 20,
+    marginLeft: 10,
+    marginRight: 10,
+    borderRadius: 35,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 15,
+  },
+  image: {
+    width: '12%',
+    aspectRatio: 1,
+    borderRadius: 40, // This ensures images maintain their aspect ratio
+  },
+  imagev: {
+    width: 100,
+    aspectRatio: 1,
+    borderRadius: 40,
+    height: 80,
+    marginLeft: 16,
+    alignItems: 'center',
   },
 });
 
@@ -2231,13 +2261,13 @@ const iconsDiv = StyleSheet.create({
     fontSize: 40, // Adjust the size as needed
   },
   avatar: {
-    padding : 15,
-    alignItems : "center",
+    padding: 15,
+    alignItems: 'center',
     width: 30,
     height: 20,
     marginLeft: 25,
     borderRadius: 50,
-    marginBottom : 5
+    marginBottom: 5,
   },
 });
 

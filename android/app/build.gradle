@@ -91,7 +91,7 @@ def reactNativeArchitectures() {
 android {
 
     project.ext.vectoricons = [
-	iconFontNames: ['MaterialCommunityIcons.ttf'] // Add fonts needed
+	 iconFontNames: [ 'MaterialIcons.ttf', 'EvilIcons.ttf' ] // Add fonts needed
 ]
 
     apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
