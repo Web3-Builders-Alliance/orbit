@@ -872,7 +872,7 @@ export default function FullMainScreen() {
         </View>
 
         {/* Bottom Sheet for marker */}
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        {/* <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <BottomSheet
             visible={openBottomSheetmarker}
             onClose={closeBottomSheetMarker}>
@@ -963,7 +963,187 @@ export default function FullMainScreen() {
               </View>
             </TouchableOpacity>
           </BottomSheet>
+        </View> */}
+
+        {/* Bottom Sheet for Help */}
+
+        {/* <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <BottomSheet
+            visible={openBottomSheetmarker}
+            onClose={closeBottomSheetMarker}>
+            <ScrollView nestedScrollEnabled={true}>
+              <View style={newStyle.detailBox}>
+                <ScrollView>
+                  <Text style={newStyle.text}>
+                    {isit ? (
+                      eventData[0].name
+                    ) : (
+                      <ActivityIndicator size={'small'} color="white" />
+                    )}
+                  </Text>
+                  <Text style={newStyle.subtext}>Desctiption :</Text>
+                  <Text style={newStyle.subtext}>
+                    {isit ? (
+                      eventData[0].desc
+                    ) : (
+                      <ActivityIndicator size={'small'} color="white" />
+                    )}
+                  </Text>
+
+                  <Text style={newStyle.subtextforhelp}>
+                    Incentive : 0.5 ORB + 6 SOL
+                  </Text>
+
+                  <Text style={newStyle.subtext}>Posted By :</Text>
+
+                  <View style={helpBt.container}>
+                    <Image
+                      source={{uri: 'https://picsum.photos/200'}} // Replace with your image URL
+                      style={styles.logoim}
+                    />
+                    <Text style={helpBt.text}>Jemes</Text>
+                  </View>
+                </ScrollView>
+
+                <>
+                  {transferLoading ? (
+                    <>
+                      <ActivityIndicator size={'small'} color="white" />
+                    </>
+                  ) : (
+                    <>
+                      <TouchableOpacity onPress={() => transferCNFT(mint)}>
+                        <View
+                          style={{
+                            backgroundColor: 'white',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: 15,
+                            height: 45,
+                            marginLeft: 16,
+                            marginRight: 16,
+                            marginTop: 35,
+                            marginBottom: 20,
+                          }}>
+                          <Text style={{color: 'black', fontSize: 18}}>
+                            Get Going
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    </>
+                  )}
+                </>
+              </View>
+            </ScrollView>
+            <TouchableOpacity onPress={closeBottomSheetMarker}>
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 15,
+                  height: 45,
+                }}>
+                <Text style={{color: 'black', fontSize: 18}}>Close</Text>
+              </View>
+            </TouchableOpacity>
+          </BottomSheet>
+        </View> */}
+
+        {/* Bottom Sheet for transport */}
+
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <BottomSheet
+            visible={openBottomSheetmarker}
+            onClose={closeBottomSheetMarker}>
+            <ScrollView nestedScrollEnabled={true}>
+              <View style={newStyle.detailBox}>
+                <ScrollView>
+                  <Text style={newStyle.text}>
+                    {isit ? (
+                      "Transportation Data"
+                    ) : (
+                      <ActivityIndicator size={'small'} color="white" />
+                    )}
+                  </Text>
+                  <Text style={newStyle.subtext}>Travel Discription :</Text>
+                  <Text style={newStyle.subtext}>
+                    {isit ? (
+                      <>
+                      <Text style={newStyle.subtext}>
+                        From - 4 Street To 12 Street Avenue
+                      </Text>
+                      </>
+                    ) : (
+                      <ActivityIndicator size={'small'} color="white" />
+                    )}
+                  </Text>
+
+                  <Text style={newStyle.subtext}>
+                    Time : 3:00 PM
+                  </Text>
+
+                  <Text style={newStyle.subtextfortransport}>
+                    Fee : 0.5 ORB + 2 SOl
+                  </Text>
+
+
+                  <Text style={newStyle.subtext}>Posted By :</Text>
+
+                  <View style={helpBt.container}>
+                    <Image
+                      source={{uri: 'https://picsum.photos/201'}} // Replace with your image URL
+                      style={styles.logoim}
+                    />
+                    <Text style={helpBt.text}>Robert</Text>
+                  </View>
+                </ScrollView>
+
+                <>
+                  {transferLoading ? (
+                    <>
+                      <ActivityIndicator size={'small'} color="white" />
+                    </>
+                  ) : (
+                    <>
+                      <TouchableOpacity onPress={() => transferCNFT(mint)}>
+                        <View
+                          style={{
+                            backgroundColor: 'white',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: 15,
+                            height: 45,
+                            marginLeft: 16,
+                            marginRight: 16,
+                            marginTop: 35,
+                            marginBottom: 20,
+                          }}>
+                          <Text style={{color: 'black', fontSize: 18}}>
+                             Confirm Ride Pool
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    </>
+                  )}
+                </>
+              </View>
+            </ScrollView>
+            <TouchableOpacity onPress={closeBottomSheetMarker}>
+              <View
+                style={{
+                  backgroundColor: 'white',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 15,
+                  height: 45,
+                }}>
+                <Text style={{color: 'black', fontSize: 18}}>Close</Text>
+              </View>
+            </TouchableOpacity>
+          </BottomSheet>
         </View>
+
 
         {/* Bottom Sheet for display momento */}
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -1730,7 +1910,7 @@ export default function FullMainScreen() {
           <View style={styles.dailyContainer}>
             <View>
               <View style={styles.discoverHeading}>
-                <Text style={styles.textChall}>Challenges</Text>
+                <Text style={styles.textChall}>Challenges (1/3)</Text>
               </View>
             </View>
 
@@ -1754,8 +1934,7 @@ export default function FullMainScreen() {
                 This is some text next to the image.
               </Text>
             </View>
-            <TouchableOpacity
-              style={Challenges.appButtonContainer}>
+            <TouchableOpacity style={Challenges.appButtonContainer}>
               <Text style={Challenges.appButtonText}>Claim 5 ORB</Text>
             </TouchableOpacity>
           </View>
@@ -2300,9 +2479,9 @@ const Challenges = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 5,
     paddingHorizontal: 5,
-    marginLeft : 16,
-    marginRight : 16,
-    marginTop : 10
+    marginLeft: 16,
+    marginRight: 16,
+    marginTop: 10,
   },
   appButtonText: {
     fontSize: 18,
@@ -2369,6 +2548,40 @@ const newStyle = StyleSheet.create({
     marginLeft: 15,
     marginTop: 10,
     fontSize: 18,
+  },
+  subtextforhelp: {
+    color: '#9ef01a',
+    marginLeft: 15,
+    marginTop: 10,
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  subtextfortransport: {
+    color: 'red',
+    marginLeft: 15,
+    marginTop: 10,
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+});
+
+const helpBt = StyleSheet.create({
+  container: {
+    flexDirection: 'row', // This makes the image and text display side by side
+    alignItems: 'center', // Align items vertically within the container
+    padding: 16, // Adjust the padding as needed
+  },
+  image: {
+    width: 100, // Set the image width as needed
+    height: 100, // Set the image height as needed
+    resizeMode: 'cover', // Adjust the resizeMode as needed
+    marginRight: 16, // Adjust the spacing between the image and text
+  },
+  text: {
+    fontSize: 18,
+    color : "white",
+    marginLeft : 18 
+   // Adjust the text font size as needed
   },
 });
 
